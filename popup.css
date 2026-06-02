@@ -83,10 +83,18 @@ body {
   border: 1px solid #d8dcec;
   border-radius: 8px;
   padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .default-name {
   font-size: 13px;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .macros-list {
@@ -145,6 +153,11 @@ body {
   cursor: pointer;
 }
 
+.icon-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .icon-btn svg {
   width: 16px;
   height: 16px;
@@ -190,6 +203,12 @@ body {
   font-size: 16px;
 }
 
+.modal-description {
+  margin: 0;
+  font-size: 13px;
+  color: #4f5570;
+}
+
 .field {
   display: flex;
   flex-direction: column;
@@ -202,6 +221,14 @@ body {
   border-radius: 8px;
   padding: 8px 10px;
   font-size: 13px;
+}
+
+.field select {
+  border: 1px solid #c8ccdb;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 13px;
+  background: #fff;
 }
 
 .steps-list {
@@ -232,6 +259,11 @@ body {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
+}
+
+.modal-actions-left {
+  justify-content: flex-start;
+  flex-wrap: wrap;
 }
 
 .danger-text {

@@ -14,6 +14,7 @@
         <h2 class="section-title">Дефолтный macros</h2>
         <div class="default-row">
           <span id="default-macro-name" class="default-name">Не выбран</span>
+          <button id="default-macro-edit-btn" class="icon-btn" type="button" title="Выбрать дефолтный macros" aria-label="Выбрать дефолтный macros"></button>
         </div>
       </section>
 
@@ -56,6 +57,32 @@
         <div class="modal-actions">
           <button id="confirm-delete-btn" class="btn btn-danger" type="button">Да</button>
           <button id="cancel-delete-btn" class="btn btn-success" type="button">Нет</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="record-mode-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="record-mode-modal-title">
+      <div class="modal">
+        <h3 id="record-mode-modal-title">Создание macros</h3>
+        <p class="modal-description">Выберите формат шагов для записи.</p>
+        <div class="modal-actions modal-actions-left">
+          <button id="record-coords-btn" class="btn btn-primary" type="button">По координатам</button>
+          <button id="record-selectors-btn" class="btn btn-primary" type="button">По элементам</button>
+          <button id="record-cancel-btn" class="btn" type="button">Отмена</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="default-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="default-modal-title">
+      <div class="modal">
+        <h3 id="default-modal-title">Выбор дефолтного macros</h3>
+        <label class="field">
+          <span>Macros</span>
+          <select id="default-macro-select"></select>
+        </label>
+        <div class="modal-actions">
+          <button id="save-default-btn" class="btn btn-primary" type="button">Сохранить</button>
+          <button id="cancel-default-btn" class="btn" type="button">Отмена</button>
         </div>
       </div>
     </div>
