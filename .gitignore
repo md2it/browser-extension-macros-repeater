@@ -1,0 +1,22 @@
+# Canonical rules: lib/extension.gitignore (catalog layout)
+node_modules/
+.DS_Store
+dist/
+/background.js
+/content.js
+/welcome.js
+/blocked-notice.js
+*.zip
+PUBLICATION/*.png
+PUBLICATION/**/*.png
+PUBLICATION/*.jpeg
+PUBLICATION/**/*.jpeg
+PUBLICATION/*.jpg
+PUBLICATION/**/*.jpg
+build/
+out/
+*.tsbuildinfo
+.env
+.env.*
+.cursor/
+TEMP*
