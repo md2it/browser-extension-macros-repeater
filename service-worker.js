@@ -79,30 +79,36 @@ async function getRuntimeExecutionState() {
     return null;
   }
 
-  const now = Date.now();
-  const startedAt = Number(state.startedAt) || now;
-  const durationMs = Number(state.durationMs) || 0;
-  const elapsedMs = Math.max(0, now - startedAt);
-  const remainingMs = Math.max(0, durationMs - elapsedMs);
-
-  if (remainingMs <= 0) {
-    await clearExecutionState();
-    await writeExecutionLastEvent({
-      type: "completed",
-      macroId: state.macroId ?? null,
-      macroName: typeof state.macroName === "string" ? state.macroName : "macros"
-    });
-    return null;
-  }
-
   return {
     isRunning: true,
     macroId: state.macroId ?? null,
     macroName: typeof state.macroName === "string" ? state.macroName : "macros",
-    startedAt,
-    durationMs,
-    remainingMs
+    tabId: Number.isInteger(state.tabId) ? state.tabId : null,
+    repeats: Number.isFinite(Number(state.repeats)) ? Number(state.repeats) : 1,
+    startedAt: Number(state.startedAt) || Date.now(),
+    completedSteps: Number.isFinite(Number(state.completedSteps)) ? Number(state.completedSteps) : 0,
+    totalSteps: Number.isFinite(Number(state.totalSteps)) ? Number(state.totalSteps) : 0,
+    remainingMs: Number.isFinite(Number(state.remainingMs)) ? Number(state.remainingMs) : 0
   };
+}
+
+async function stopExecutionWithEvent(event) {
+  await clearExecutionState();
+  await writeExecutionLastEvent(event);
+  await syncActionBadge();
+}
+
+async function openPopupWithCompletionMessage() {
+  if (!chrome.action || typeof chrome.action.openPopup !== "function") {
+    return false;
+  }
+
+  try {
+    await chrome.action.openPopup();
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 async function syncActionBadge() {
@@ -236,26 +242,67 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       const macroId = typeof message.macroId === "string" ? message.macroId : "";
       const macroName = typeof message.macroName === "string" && message.macroName.trim() ? message.macroName.trim() : "macros";
       const repeatsRaw = Number(message.repeats);
-      const repeats = Number.isFinite(repeatsRaw) && repeatsRaw > 0 ? repeatsRaw : 1;
+      const repeats = Number.isFinite(repeatsRaw) && repeatsRaw > 0 ? Math.floor(repeatsRaw) : 1;
+      const tabId = Number.isInteger(message.tabId) ? message.tabId : null;
+      const steps = Array.isArray(message.steps) ? message.steps.filter((step) => typeof step === "string" && step.trim()) : [];
+      if (tabId === null) {
+        sendResponse({ ok: false, error: "tab_id_required" });
+        return;
+      }
+
+      if (steps.length === 0) {
+        sendResponse({ ok: false, error: "empty_steps" });
+        return;
+      }
+
+      const totalSteps = steps.length * repeats;
       const state = {
         isRunning: true,
         macroId,
         macroName,
+        tabId,
         repeats,
         startedAt: Date.now(),
-        durationMs: repeats * 1500
+        completedSteps: 0,
+        totalSteps,
+        remainingMs: totalSteps * 1000
       };
       await writeExecutionState(state);
       await syncActionBadge();
+
+      try {
+        const tabResponse = await chrome.tabs.sendMessage(tabId, {
+          type: "execution-run",
+          macroId,
+          macroName,
+          repeats,
+          steps
+        });
+        if (!tabResponse?.ok) {
+          await clearExecutionState();
+          await syncActionBadge();
+          sendResponse({ ok: false, error: tabResponse?.error ?? "execution_run_failed" });
+          return;
+        }
+      } catch {
+        await clearExecutionState();
+        await syncActionBadge();
+        sendResponse({ ok: false, error: "tab_unreachable" });
+        return;
+      }
+
       sendResponse({
         ok: true,
         state: {
           isRunning: true,
           macroId: state.macroId,
           macroName: state.macroName,
+          tabId: state.tabId,
+          repeats: state.repeats,
           startedAt: state.startedAt,
-          durationMs: state.durationMs,
-          remainingMs: state.durationMs
+          completedSteps: state.completedSteps,
+          totalSteps: state.totalSteps,
+          remainingMs: state.remainingMs
         }
       });
     })().catch(() => sendResponse({ ok: false, error: "execution_start_failed" }));
@@ -272,15 +319,99 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         return;
       }
 
-      await clearExecutionState();
-      await writeExecutionLastEvent({
+      if (Number.isInteger(currentState.tabId)) {
+        try {
+          await chrome.tabs.sendMessage(currentState.tabId, { type: "execution-stop" });
+        } catch {
+          // Ignore: tab may be closed or unavailable.
+        }
+      }
+
+      await stopExecutionWithEvent({
         type: "stopped",
         macroId: currentState.macroId,
         macroName: currentState.macroName
       });
-      await syncActionBadge();
       sendResponse({ ok: true, wasRunning: true, stoppedMacroName: currentState.macroName });
     })().catch(() => sendResponse({ ok: false, error: "execution_stop_failed" }));
+
+    return true;
+  }
+
+  if (message.type === "execution-progress") {
+    (async () => {
+      const currentState = await getRuntimeExecutionState();
+      if (!currentState?.isRunning) {
+        sendResponse({ ok: true, ignored: true, reason: "inactive" });
+        return;
+      }
+
+      if (!sender?.tab || sender.tab.id !== currentState.tabId) {
+        sendResponse({ ok: true, ignored: true, reason: "other_tab" });
+        return;
+      }
+
+      const completedStepsRaw = Number(message.completedSteps);
+      const totalStepsRaw = Number(message.totalSteps);
+      const remainingMsRaw = Number(message.remainingMs);
+      const nextState = {
+        ...currentState,
+        completedSteps: Number.isFinite(completedStepsRaw) ? Math.max(0, completedStepsRaw) : currentState.completedSteps,
+        totalSteps: Number.isFinite(totalStepsRaw) ? Math.max(0, totalStepsRaw) : currentState.totalSteps,
+        remainingMs: Number.isFinite(remainingMsRaw) ? Math.max(0, remainingMsRaw) : currentState.remainingMs
+      };
+      await writeExecutionState(nextState);
+      sendResponse({ ok: true });
+    })().catch(() => sendResponse({ ok: false, error: "execution_progress_failed" }));
+
+    return true;
+  }
+
+  if (message.type === "execution-completed") {
+    (async () => {
+      const currentState = await getRuntimeExecutionState();
+      if (!currentState?.isRunning) {
+        sendResponse({ ok: true, ignored: true, reason: "inactive" });
+        return;
+      }
+
+      if (!sender?.tab || sender.tab.id !== currentState.tabId) {
+        sendResponse({ ok: true, ignored: true, reason: "other_tab" });
+        return;
+      }
+
+      await stopExecutionWithEvent({
+        type: "completed",
+        macroId: currentState.macroId,
+        macroName: currentState.macroName
+      });
+      const popupOpened = await openPopupWithCompletionMessage();
+      sendResponse({ ok: true, popupOpened });
+    })().catch(() => sendResponse({ ok: false, error: "execution_complete_failed" }));
+
+    return true;
+  }
+
+  if (message.type === "execution-stopped" || message.type === "execution-user-click-interrupt") {
+    (async () => {
+      const currentState = await getRuntimeExecutionState();
+      if (!currentState?.isRunning) {
+        sendResponse({ ok: true, ignored: true, reason: "inactive" });
+        return;
+      }
+
+      if (!sender?.tab || sender.tab.id !== currentState.tabId) {
+        sendResponse({ ok: true, ignored: true, reason: "other_tab" });
+        return;
+      }
+
+      await stopExecutionWithEvent({
+        type: "stopped",
+        macroId: currentState.macroId,
+        macroName: currentState.macroName
+      });
+      sendResponse({ ok: true });
+    })().catch(() => sendResponse({ ok: false, error: "execution_stopped_failed" }));
 
     return true;
   }
@@ -300,7 +431,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         state: { isRunning: false },
         lastEvent: lastEvent?.type ?? null,
         completedMacroName: lastEvent?.type === "completed" ? lastEvent.macroName : undefined,
-        stoppedMacroName: lastEvent?.type === "stopped" ? lastEvent.macroName : undefined
+        stoppedMacroName: lastEvent?.type === "stopped" ? lastEvent.macroName : undefined,
+        failedMacroName: lastEvent?.type === "failed" ? lastEvent.macroName : undefined
       });
     })().catch(() => sendResponse({ ok: false, state: { isRunning: false } }));
 

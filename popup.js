@@ -200,7 +200,7 @@ async function refreshExecutionStatus({ silent = false } = {}) {
         void refreshExecutionStatus({ silent: true });
       }, 1000);
     }
-    return;
+    return response;
   }
 
   clearExecutionPolling();
@@ -210,10 +210,14 @@ async function refreshExecutionStatus({ silent = false } = {}) {
       setStatus(`Выполнение "${response.completedMacroName}" завершено.`);
     } else if (response?.lastEvent === "stopped" && response.stoppedMacroName) {
       setStatus(`Выполнение "${response.stoppedMacroName}" остановлено.`);
+    } else if (response?.lastEvent === "failed" && response.failedMacroName) {
+      setStatus(`Выполнение "${response.failedMacroName}" завершилось с ошибкой.`);
     }
   } else {
     syncPopupHeight();
   }
+
+  return response;
 }
 
 async function startExecution(macroId) {
@@ -223,11 +227,25 @@ async function startExecution(macroId) {
     return;
   }
 
+  const activeTab = await getActiveTab();
+  if (!activeTab || !Number.isInteger(activeTab.id)) {
+    setStatus("Активная вкладка не найдена.");
+    return;
+  }
+
+  const steps = Array.isArray(macro.steps) ? macro.steps.filter((step) => typeof step === "string" && step.trim()) : [];
+  if (steps.length === 0) {
+    setStatus("В macros нет шагов для выполнения.");
+    return;
+  }
+
   const response = await sendRuntimeMessage({
     type: "execution-start",
     macroId: macro.id,
     macroName: macro.name,
-    repeats: macro.repeats
+    repeats: macro.repeats,
+    tabId: activeTab.id,
+    steps
   });
 
   if (!response?.ok) {
@@ -237,13 +255,23 @@ async function startExecution(macroId) {
       return;
     }
 
+    if (response?.error === "empty_steps") {
+      setStatus("Не удалось запустить: отсутствуют шаги исполнения.");
+      return;
+    }
+
+    if (response?.error === "tab_unreachable") {
+      setStatus("Не удалось запустить: вкладка недоступна для исполнения.");
+      return;
+    }
+
     setStatus("Не удалось запустить выполнение macros.");
     return;
   }
 
   renderExecutionStatus(response.state);
   setStatus(`Запущено выполнение "${macro.name}".`);
-  await refreshExecutionStatus({ silent: true });
+  window.close();
 }
 
 async function stopExecution() {
@@ -670,10 +698,26 @@ async function init() {
   await loadMacros();
   const createdMacro = await completeCreateModeIfNeeded();
   render();
-  await refreshExecutionStatus({ silent: true });
+  const executionStatus = await refreshExecutionStatus();
   if (createdMacro) {
     openEditModal(createdMacro.id);
     setStatus("Создание завершено. Проверьте и сохраните параметры macros.");
+    return;
+  }
+
+  if (executionStatus?.lastEvent === "completed" && executionStatus.completedMacroName) {
+    return;
+  }
+
+  if (executionStatus?.lastEvent === "stopped" && executionStatus.stoppedMacroName) {
+    return;
+  }
+
+  if (executionStatus?.lastEvent === "failed" && executionStatus.failedMacroName) {
+    return;
+  }
+
+  if (executionStatus?.state?.isRunning) {
     return;
   }
 
