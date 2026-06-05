@@ -11,10 +11,6 @@
   text-overflow: ellipsis;
 }
 
-.macro-name.default {
-  font-weight: 700;
-}
-
 .macro-actions {
   display: inline-flex;
   align-items: center;
@@ -45,6 +41,47 @@
 
 .icon-btn.display-moves-off {
   color: #8f96b3;
+}
+
+.default-btn.active,
+.default-toggle.active {
+  color: #012292;
+}
+
+.default-btn.active svg,
+.default-toggle.active svg {
+  fill: currentColor;
+}
+
+.default-btn {
+  position: relative;
+}
+
+.default-btn::after {
+  content: attr(data-tooltip) "\A" attr(data-tooltip-detail);
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 6px);
+  z-index: 5;
+  min-width: max-content;
+  padding: 5px 7px;
+  border-radius: 5px;
+  color: #fff;
+  background: #111827;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: left;
+  white-space: pre;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.default-btn:hover::after,
+.default-btn:focus-visible::after {
+  opacity: 1;
+  visibility: visible;
 }
 
 .status-line {
@@ -107,7 +144,8 @@
   font-size: 13px;
 }
 
-.display-moves-toggle {
+.display-moves-toggle,
+.default-toggle {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -121,17 +159,20 @@
   cursor: pointer;
 }
 
-.display-moves-toggle:hover {
+.display-moves-toggle:hover,
+.default-toggle:hover {
   background: #f0f2fa;
 }
 
-.display-moves-toggle-icon {
+.display-moves-toggle-icon,
+.default-toggle-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 
-.display-moves-toggle-icon svg {
+.display-moves-toggle-icon svg,
+.default-toggle-icon svg {
   width: 16px;
   height: 16px;
 }

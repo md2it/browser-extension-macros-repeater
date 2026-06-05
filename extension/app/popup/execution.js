@@ -5,14 +5,12 @@ function syncPopupHeight() {
   const editModalHeight = refs.editModal.classList.contains("hidden") ? 0 : refs.editModal.scrollHeight;
   const deleteModalHeight = refs.deleteModal.classList.contains("hidden") ? 0 : refs.deleteModal.scrollHeight;
   const recordModeModalHeight = refs.recordModeModal.classList.contains("hidden") ? 0 : refs.recordModeModal.scrollHeight;
-  const defaultModalHeight = refs.defaultModal.classList.contains("hidden") ? 0 : refs.defaultModal.scrollHeight;
   const targetHeight = Math.max(
     minHeightPx,
     popupHeight,
     editModalHeight,
     deleteModalHeight,
-    recordModeModalHeight,
-    defaultModalHeight
+    recordModeModalHeight
   );
 
   if (!targetHeight) {

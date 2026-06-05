@@ -7,25 +7,68 @@
     <link rel="stylesheet" href="app/popup/base.css" />
     <link rel="stylesheet" href="app/popup/modal.css" />
     <link rel="stylesheet" href="app/popup/steps.css" />
+    <link rel="stylesheet" href="app/popup/navigation.css" />
   </head>
   <body>
-    <main class="popup">
-      <button id="new-macro-btn" class="btn btn-primary" type="button">NEW macros</button>
+    <main class="popup-shell">
+      <nav class="popup-menu" aria-label="Popup pages">
+        <button class="popup-menu-btn active" type="button" data-page="macros" data-tooltip="MACROSES" aria-label="MACROSES" aria-current="page"></button>
+        <button class="popup-menu-btn" type="button" data-page="settings" data-tooltip="SETTINGS" aria-label="SETTINGS"></button>
+        <button class="popup-menu-btn" type="button" data-page="shortcuts" data-tooltip="SHORTCUTS" aria-label="SHORTCUTS"></button>
+        <button class="popup-menu-btn" type="button" data-page="about" data-tooltip="ABOUT" aria-label="ABOUT"></button>
+      </nav>
 
-      <section class="default-block">
-        <h2 class="section-title">Дефолтный macros</h2>
-        <div class="default-row">
-          <span id="default-macro-name" class="default-name">Не выбран</span>
-          <button id="default-macro-edit-btn" class="icon-btn" type="button" title="Выбрать дефолтный macros" aria-label="Выбрать дефолтный macros"></button>
-        </div>
-      </section>
+      <div class="popup-content">
+        <section class="popup-page popup" data-page-content="macros">
+          <button id="new-macro-btn" class="btn btn-primary" type="button">NEW macros</button>
 
-      <section>
-        <ul id="macros-list" class="macros-list" aria-label="Список macros"></ul>
-      </section>
+          <section>
+            <ul id="macros-list" class="macros-list" aria-label="Список macros"></ul>
+          </section>
 
-      <p id="status-line" class="status-line" role="status" aria-live="polite"></p>
-      <button id="stop-execution-btn" class="btn btn-danger hidden" type="button">STOP</button>
+          <p id="status-line" class="status-line" role="status" aria-live="polite"></p>
+          <button id="stop-execution-btn" class="btn btn-danger hidden" type="button">STOP</button>
+        </section>
+
+        <section class="popup-page hidden" data-page-content="settings">
+          <h1 class="page-title">SETTINGS</h1>
+          <div class="page-divider"></div>
+        </section>
+
+        <section class="popup-page shortcuts-page hidden" data-page-content="shortcuts">
+          <h1 class="page-title">SHORTCUTS</h1>
+          <div class="page-divider"></div>
+          <p class="shortcuts-heading">To run / stop the extension:</p>
+          <ol class="shortcuts-steps">
+            <li>
+              <span class="shortcut-label">Press:</span> <kbd>Ctrl+Shift+M</kbd><br />
+              <span class="shortcut-label">On Mac:</span> <kbd>Cmd+Shift+M</kbd>
+            </li>
+            <li><strong>Release</strong> the keys</li>
+            <li>Then press <kbd>M</kbd></li>
+          </ol>
+          <p class="page-note">The 3-step shortcut is not obvious.</p>
+          <p class="page-note">But it is safer and avoids conflicts with other apps.</p>
+          <div class="soft-divider"></div>
+          <p class="shortcuts-stop"><strong>To stop:</strong> <kbd>Esc</kbd></p>
+          <div class="soft-divider"></div>
+        </section>
+
+        <section class="popup-page about-page hidden" data-page-content="about">
+          <h1 class="page-title">ABOUT</h1>
+          <div class="page-divider"></div>
+          <ul class="about-list">
+            <li><span class="about-icon" data-about-icon="shield"></span><span>Doesn't use the network</span></li>
+            <li><span class="about-icon" data-about-icon="shield"></span><span>Doesn't collect data</span></li>
+            <li><span class="about-icon" data-about-icon="heart"></span><span>Credits (MIT): Lucide</span></li>
+          </ul>
+          <footer class="about-footer">
+            <div class="soft-divider"></div>
+            <p>Macros Repeater</p>
+            <p>© <a href="https://www.linkedin.com/in/alex-terekhov/" target="_blank" rel="noopener noreferrer">Alex T</a></p>
+          </footer>
+        </section>
+      </div>
     </main>
 
     <div id="edit-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="edit-modal-title">
@@ -49,6 +92,15 @@
             <span class="display-moves-toggle-label">Display moves</span>
           </button>
           <input id="edit-display-moves" type="checkbox" class="visually-hidden" />
+        </label>
+
+        <label class="field">
+          <span>Дефолтный macros</span>
+          <button id="edit-default-toggle" class="default-toggle" type="button" aria-pressed="false">
+            <span id="edit-default-icon" class="default-toggle-icon" aria-hidden="true"></span>
+            <span>Дефолтный macros</span>
+          </button>
+          <input id="edit-default" type="checkbox" class="visually-hidden" />
         </label>
 
         <section class="field">
@@ -85,20 +137,6 @@
       </div>
     </div>
 
-    <div id="default-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="default-modal-title">
-      <div class="modal">
-        <h3 id="default-modal-title">Выбор дефолтного macros</h3>
-        <section class="field">
-          <span>Macros</span>
-          <div id="default-macro-radio-list" class="default-radio-list" role="radiogroup" aria-label="Список macros"></div>
-        </section>
-        <div class="modal-actions">
-          <button id="save-default-btn" class="btn btn-primary" type="button">Сохранить</button>
-          <button id="cancel-default-btn" class="btn" type="button">Отмена</button>
-        </div>
-      </div>
-    </div>
-
     <script src="lib/icons/lucide/icons.js"></script>
     <script src="lib/our/api.js"></script>
     <script src="lib/our/safe-extension-api.js"></script>
@@ -107,6 +145,7 @@
     <script src="app/popup/storage.js"></script>
     <script src="app/popup/execution.js"></script>
     <script src="app/popup/render.js"></script>
+    <script src="app/popup/navigation.js"></script>
     <script src="app/popup/events.js"></script>
     <script src="app/popup/main.js"></script>
   </body>

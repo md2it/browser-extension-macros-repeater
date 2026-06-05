@@ -13,6 +13,14 @@ function setEditDisplayMoves(enabled) {
   refs.editDisplayMovesToggle.setAttribute("aria-pressed", String(displayMovesEnabled));
 }
 
+function setEditDefault(enabled) {
+  const isDefault = Boolean(enabled);
+  refs.editDefault.checked = isDefault;
+  refs.editDefaultIcon.innerHTML = iconSet.star;
+  refs.editDefaultToggle.classList.toggle("active", isDefault);
+  refs.editDefaultToggle.setAttribute("aria-pressed", String(isDefault));
+}
+
 function buildDefaultMacroName() {
   const now = new Date();
   const date = now.toISOString().slice(0, 10);
@@ -99,19 +107,15 @@ async function cleanupLegacyTrackMovesSetting() {
   await ext.storage.local.remove("track_moves_enabled");
 }
 
-function getDefaultMacro() {
-  return defaultMacroId ? macros.find((macro) => macro.id === defaultMacroId) ?? null : null;
-}
-
-async function setDefaultMacro(macroId) {
+async function setDefaultMacro(macroId, enabled = true) {
   const macro = macros.find((item) => item.id === macroId);
   if (!macro) {
     setStatus("Macros не найден.");
     return;
   }
 
-  defaultMacroId = macroId;
+  defaultMacroId = enabled ? macroId : null;
   await persistDefaultMacroId();
   render();
-  setStatus(`Дефолтный macros: ${macro.name}`);
+  setStatus(enabled ? `Дефолтный macros: ${macro.name}` : "Дефолтный macros не задан.");
 }

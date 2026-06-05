@@ -1,10 +1,6 @@
 
 function render() {
   refs.list.innerHTML = "";
-  const defaultMacro = getDefaultMacro();
-  refs.defaultName.textContent = defaultMacro ? defaultMacro.name : "Не задан";
-  refs.defaultEditBtn.innerHTML = iconSet.squarePen;
-  refs.defaultEditBtn.disabled = macros.length === 0;
 
   if (macros.length === 0) {
     const emptyRow = document.createElement("li");
@@ -20,14 +16,18 @@ function render() {
     const displayMovesTitle = displayMovesEnabled ? "Display moves: on" : "Display moves: off";
     const displayMovesIcon = displayMovesEnabled ? iconSet.eye : iconSet.eyeOff;
     const displayMovesClassName = displayMovesEnabled ? "" : "display-moves-off";
+    const isDefault = macro.id === defaultMacroId;
+    const defaultTitle = isDefault ? "Дефолтный macros" : "Сделать дефолтным";
+    const defaultDetail = isDefault ? "Работает по shortcut" : "Чтобы работал с shortcut";
     const row = document.createElement("li");
     row.className = "macro-row";
     row.innerHTML = `
       <div class="macro-main">
         <button class="icon-btn" type="button" data-action="run" data-id="${macro.id}" title="Запуск режима исполнения">${iconSet.play}</button>
-        <span class="macro-name ${macro.id === defaultMacroId ? "default" : ""}">${macro.name}</span>
+        <span class="macro-name">${macro.name}</span>
       </div>
       <div class="macro-actions">
+        <button class="icon-btn default-btn ${isDefault ? "active" : ""}" type="button" data-action="set-default" data-id="${macro.id}" data-tooltip="${defaultTitle}" data-tooltip-detail="${defaultDetail}" aria-label="${defaultTitle}. ${defaultDetail}" aria-pressed="${isDefault}">${iconSet.star}</button>
         <button class="icon-btn ${displayMovesClassName}" type="button" data-action="toggle-display-moves" data-id="${macro.id}" title="${displayMovesTitle}" aria-label="${displayMovesTitle}">${displayMovesIcon}</button>
         <button class="icon-btn" type="button" data-action="edit" data-id="${macro.id}" title="Редактировать">${iconSet.squarePen}</button>
         <button class="icon-btn" type="button" data-action="delete" data-id="${macro.id}" title="Удалить">${iconSet.trash}</button>
@@ -58,6 +58,7 @@ function openEditModal(macroId) {
     refs.editName.value = macro.name;
     refs.editRepeats.value = String(macro.repeats ?? 1);
     setEditDisplayMoves(getDisplayMovesValue(macro));
+    setEditDefault(macro.id === defaultMacroId);
     renderEditSteps(Array.isArray(macro.steps) ? macro.steps : []);
     refs.editModal.classList.remove("hidden");
     syncPopupHeight();
@@ -70,6 +71,7 @@ function openEditModal(macroId) {
   refs.editName.value = buildDefaultMacroName();
   refs.editRepeats.value = "1";
   setEditDisplayMoves(false);
+  setEditDefault(false);
   renderEditSteps([]);
   refs.editModal.classList.remove("hidden");
   syncPopupHeight();
@@ -110,52 +112,6 @@ function closeRecordModeModal() {
   syncPopupHeight();
 }
 
-function openDefaultModal() {
-  if (macros.length === 0) {
-    setStatus("Список macros пуст.");
-    return;
-  }
-
-  refs.defaultRadioList.innerHTML = "";
-  for (const macro of macros) {
-    const optionLabel = document.createElement("label");
-    optionLabel.className = "default-radio-option";
-
-    const input = document.createElement("input");
-    input.type = "radio";
-    input.name = "default-macro-id";
-    input.value = macro.id;
-    input.className = "default-radio-input";
-
-    const box = document.createElement("span");
-    box.className = "default-radio-box";
-    box.setAttribute("aria-hidden", "true");
-
-    const text = document.createElement("span");
-    text.className = "default-radio-text";
-    text.textContent = macro.name;
-
-    optionLabel.append(input, box, text);
-    refs.defaultRadioList.append(optionLabel);
-  }
-
-  const selectedId = defaultMacroId && macros.some((macro) => macro.id === defaultMacroId) ? defaultMacroId : macros[0].id;
-  const radioInputs = refs.defaultRadioList.querySelectorAll("input[name='default-macro-id']");
-  for (const input of radioInputs) {
-    if (input.value === selectedId) {
-      input.checked = true;
-      break;
-    }
-  }
-  refs.defaultModal.classList.remove("hidden");
-  syncPopupHeight();
-}
-
-function closeDefaultModal() {
-  refs.defaultModal.classList.add("hidden");
-  syncPopupHeight();
-}
-
 function closeModalByEscape() {
   if (!refs.editModal.classList.contains("hidden")) {
     closeEditModal();
@@ -166,12 +122,6 @@ function closeModalByEscape() {
   if (!refs.deleteModal.classList.contains("hidden")) {
     closeDeleteModal();
     setStatus("Удаление отменено.");
-    return true;
-  }
-
-  if (!refs.defaultModal.classList.contains("hidden")) {
-    closeDefaultModal();
-    setStatus("Выбор дефолтного macros отменен.");
     return true;
   }
 

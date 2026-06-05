@@ -11,11 +11,12 @@ const state = {
 };
 
 const refs = {
-  popup: document.querySelector(".popup"),
+  popup: document.querySelector(".popup-shell"),
+  menu: document.querySelector(".popup-menu"),
+  menuButtons: document.querySelectorAll(".popup-menu-btn"),
+  pages: document.querySelectorAll("[data-page-content]"),
   list: document.getElementById("macros-list"),
   status: document.getElementById("status-line"),
-  defaultName: document.getElementById("default-macro-name"),
-  defaultEditBtn: document.getElementById("default-macro-edit-btn"),
   stopExecutionBtn: document.getElementById("stop-execution-btn"),
   newMacroBtn: document.getElementById("new-macro-btn"),
   editModal: document.getElementById("edit-modal"),
@@ -25,6 +26,9 @@ const refs = {
   editDisplayMovesToggle: document.getElementById("edit-display-moves-toggle"),
   editDisplayMovesIcon: document.getElementById("edit-display-moves-icon"),
   editDisplayMoves: document.getElementById("edit-display-moves"),
+  editDefaultToggle: document.getElementById("edit-default-toggle"),
+  editDefaultIcon: document.getElementById("edit-default-icon"),
+  editDefault: document.getElementById("edit-default"),
   editSteps: document.getElementById("edit-steps"),
   deleteModal: document.getElementById("delete-modal"),
   deleteMacroName: document.getElementById("delete-macro-name"),
@@ -35,11 +39,7 @@ const refs = {
   recordModeModal: document.getElementById("record-mode-modal"),
   recordCoordsBtn: document.getElementById("record-coords-btn"),
   recordSelectorsBtn: document.getElementById("record-selectors-btn"),
-  recordCancelBtn: document.getElementById("record-cancel-btn"),
-  defaultModal: document.getElementById("default-modal"),
-  defaultRadioList: document.getElementById("default-macro-radio-list"),
-  saveDefaultBtn: document.getElementById("save-default-btn"),
-  cancelDefaultBtn: document.getElementById("cancel-default-btn")
+  recordCancelBtn: document.getElementById("record-cancel-btn")
 };
 
 const iconSet = globalThis.macrosRepeaterLucideIcons;

@@ -21,6 +21,11 @@ refs.list.addEventListener("click", (event) => {
     return;
   }
 
+  if (action === "set-default") {
+    void setDefaultMacro(macroId, macroId !== defaultMacroId);
+    return;
+  }
+
   if (action === "toggle-display-moves") {
     const macro = macros.find((item) => item.id === macroId);
     if (!macro) {
@@ -51,12 +56,12 @@ refs.stopExecutionBtn.addEventListener("click", () => {
   void stopExecution();
 });
 
-refs.defaultEditBtn.addEventListener("click", () => {
-  openDefaultModal();
-});
-
 refs.editDisplayMovesToggle.addEventListener("click", () => {
   setEditDisplayMoves(!refs.editDisplayMoves.checked);
+});
+
+refs.editDefaultToggle.addEventListener("click", () => {
+  setEditDefault(!refs.editDefault.checked);
 });
 
 refs.saveEditBtn.addEventListener("click", async () => {
@@ -86,6 +91,11 @@ refs.saveEditBtn.addEventListener("click", async () => {
       macro.steps = [];
     }
     await persistMacros();
+    const nextDefaultMacroId = refs.editDefault.checked ? macro.id : null;
+    if (defaultMacroId === macro.id || nextDefaultMacroId === macro.id) {
+      defaultMacroId = nextDefaultMacroId;
+      await persistDefaultMacroId();
+    }
     closeEditModal();
     render();
     setStatus("Macros обновлен.");
@@ -97,15 +107,20 @@ refs.saveEditBtn.addEventListener("click", async () => {
     return;
   }
 
-  macros.unshift({
+  const createdMacro = {
     id: createMacroId(),
     name,
     repeats: validRepeats,
     displayMoves,
     trackMoves: displayMoves,
     steps: []
-  });
+  };
+  macros.unshift(createdMacro);
   await persistMacros();
+  if (refs.editDefault.checked) {
+    defaultMacroId = createdMacro.id;
+    await persistDefaultMacroId();
+  }
   closeEditModal();
   render();
   setStatus("Macros сохранен и добавлен в список.");
@@ -150,23 +165,6 @@ refs.recordSelectorsBtn.addEventListener("click", () => {
 refs.recordCancelBtn.addEventListener("click", () => {
   closeRecordModeModal();
   setStatus("Создание macros отменено.");
-});
-
-refs.saveDefaultBtn.addEventListener("click", async () => {
-  const selectedInput = refs.defaultRadioList.querySelector("input[name='default-macro-id']:checked");
-  const selectedId = selectedInput ? selectedInput.value : "";
-  if (!selectedId) {
-    setStatus("Выберите macros.");
-    return;
-  }
-
-  await setDefaultMacro(selectedId);
-  closeDefaultModal();
-});
-
-refs.cancelDefaultBtn.addEventListener("click", () => {
-  closeDefaultModal();
-  setStatus("Выбор дефолтного macros отменен.");
 });
 
 document.addEventListener("keydown", (event) => {
