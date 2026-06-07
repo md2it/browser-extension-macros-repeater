@@ -50,7 +50,6 @@ function render() {
 
 function setStatus(text, { error = false } = {}) {
   refs.status.textContent = text;
-  // Запись о негативном событии отображается красным.
   refs.status.classList.toggle("status-line--error", Boolean(error));
   syncPopupHeight();
 }
@@ -262,7 +261,7 @@ async function startCreateMode() {
 
   if (!response?.ok) {
     if (response?.error === "page_blocked") {
-      // Отдельный popup с уведомлением уже открыт фоновым скриптом.
+      // The background script already opened the restricted-page notice.
       window.close();
       return;
     }

@@ -1,88 +1,88 @@
-# РЕЖИМ ИСПОЛНЕНИЯ MACROS
+# MACRO EXECUTION MODE
 
 ---
 
-## ЗАПУСК, СТОП
+## START AND STOP
 
-- По клику на иконку расширения в панели браузера:
-   - Открывает popup
-   - Ничего не запускает
-   - Если было запущено, то останавливает режим
-- Запуск режима создания строго по кнопке в popup
-- Запуск режима исполнения:
-   - По кнопке в popup для конкретного macros
-   - По хоткею для дефолтного macros
+- Clicking the extension icon in the browser toolbar:
+   - Opens the popup
+   - Does not start anything
+   - Stops the active mode, if one is running
+- Creation mode starts only from the button in the popup
+- Execution mode starts:
+   - From the button for a specific macro in the popup
+   - From the shortcut for the default macro
 
 ---
 
-## ИМИТАЦИЯ ЧЕЛОВЕКА
+## HUMAN BEHAVIOR SIMULATION
 
-### Скорость исполнения
+### Execution speed
 
-- Скорость задаётся общей настройкой расширения: [Settings — Execution speed](../pages/settings.md#settings-page)
-- Настройка применяется ко всем macros
-- Значение по умолчанию: `1×`
-- Коэффициент применяется только к одной дополнительной темповой задержке после завершения каждого шага:
+- Speed is controlled by the extension-wide setting: [Settings - Execution speed](../pages/settings.md#settings-page)
+- The setting applies to all macros
+- Default value: `1×`
+- The multiplier applies only to one additional pacing delay after each completed step:
    - `0.25×`: 3500 ms
    - `0.5×`: 1500 ms
    - `1×`: 500 ms
    - `2×`: 0 ms
-- Все остальные интервалы исполнения остаются неизменными
-- Коэффициент задаёт относительный темп, но не гарантирует пропорционального изменения полной длительности macros
+- All other execution intervals remain unchanged
+- The multiplier controls relative pacing but does not guarantee a proportional change in the macro's total duration
 
-### Общие правила
-- Не прыгать курсором
-- Путь в runtime
-- Неровный путь
-- Микросдвиги
-- Рандом: неск. мм
-- Рандом точки
-- Сдвиг клика: 1 mm
-- Заполнять movementX
-- Заполнять movementY
-- Паузы в runtime
-- Не повторять тайминг
-- Избегать ровный темп
+### General rules
+- Do not jump the cursor
+- Calculate the path at runtime
+- Use an uneven path
+- Add micro-movements
+- Randomize by several millimeters
+- Randomize the target point
+- Offset the click by 1 mm
+- Populate movementX
+- Populate movementY
+- Calculate pauses at runtime
+- Do not repeat timing patterns
+- Avoid a uniform pace
 
-### Порядок действий
+### Action sequence
 
-Условия цикла:
-- Пока есть следующий шаг
-- И нет клика пользователя
-- И не нажата остановка
+Loop conditions:
+- A next step exists
+- The user has not clicked
+- Stop has not been requested
 
-Цикл:
-1. Подготовить цель
-    1. Найти элемент или точку. Если цель не найдена: стоп
-    2. Задать точку клика
-    3. Сдвиг клика: 1 mm
-2. Если нужен путь
-    1. Рассчитать путь в runtime
-    2. Учесть дистанцию
-    3. Добавить микросдвиги
-    4. Рандом: неск. мм
-    5. Послать pointermove
-    6. Послать mousemove
-    7. Заполнить movementX/Y
-3. Если цель новая
-    1. Послать pointerover
-    2. Послать pointerenter
-    3. Послать mouseover
-    4. Послать mouseenter
-    5. Пауза: 80-250 ms
-4. Выполнить клик
-    1. Послать pointerdown
-    2. Послать mousedown
-    3. Удержать 50-150 ms
-    4. Послать pointerup
-    5. Послать mouseup
-    6. Пауза: 20-120 ms
-    7. Послать click
-5. Завершить шаг
-    1. Пауза: 80-250 ms
-6. Дополнительная темповая задержка согласно настройке скорости
-7. Запустить цикл для следующего клика, если:
-    - Есть следующий шаг
-    - Пользователь не кликнул
-    - Стоп не нажат
-    - Цель найдена
+Loop:
+1. Prepare the target
+    1. Find the element or point. Stop if the target is not found
+    2. Set the click point
+    3. Offset the click by 1 mm
+2. If a path is needed
+    1. Calculate the path at runtime
+    2. Account for distance
+    3. Add micro-movements
+    4. Randomize by several millimeters
+    5. Send pointermove
+    6. Send mousemove
+    7. Populate movementX/Y
+3. If the target is new
+    1. Send pointerover
+    2. Send pointerenter
+    3. Send mouseover
+    4. Send mouseenter
+    5. Pause for 80-250 ms
+4. Perform the click
+    1. Send pointerdown
+    2. Send mousedown
+    3. Hold for 50-150 ms
+    4. Send pointerup
+    5. Send mouseup
+    6. Pause for 20-120 ms
+    7. Send click
+5. Complete the step
+    1. Pause for 80-250 ms
+6. Apply the additional pacing delay defined by the speed setting
+7. Start the loop for the next click if:
+    - A next step exists
+    - The user has not clicked
+    - Stop has not been requested
+    - The target was found

@@ -1,7 +1,5 @@
 "use strict";
-// src/page-operability/constants.ts
-
-// Текст и переводы повторяем из element-deleter.
+// Keep these translations aligned with element-deleter.
 const RESTRICTED_PAGE_NOTICE = {
   en: "Browser extensions don't work on system pages and protected sites. Try another site.",
   es: "Las extensiones del navegador no funcionan en páginas del sistema y sitios protegidos. Prueba en otro sitio.",

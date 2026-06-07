@@ -1,15 +1,15 @@
-# ЭЛЕМЕНТЫ ПАНЕЛИ БРАУЗЕРА
+# BROWSER TOOLBAR ELEMENTS
 
 ---
 
-## ИКОНКА
-- Фон #012292
-- w-boxed.svg, #fff
+## ICON
+- Background: `#012292`
+- w-boxed.svg, `#fff`
 
 ---
 
 ## BADGE
-- Фон #012292, текст #fff
-   - В режиме создания macros красное мигание
-   - В режиме исполнения macros отображается обратный отсчёт оставшихся циклов без мигания
-- Если запущен хоткей-префикс, текст "M", фон белый, буква чёрная
+- Background: `#012292`; text: `#fff`
+   - In macro creation mode, flashes red
+   - In macro execution mode, shows a non-flashing countdown of remaining cycles
+- When the shortcut prefix is active, the text is "M", the background is white, and the letter is black

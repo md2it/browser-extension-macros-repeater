@@ -1,48 +1,48 @@
-# РЕДАКТИРОВАНИЕ MACROS
+# EDITING MACROS
 
-## В ОТДЕЛЬНОМ ОКНЕ
+## IN A SEPARATE WINDOW
 
-### Настройки
-- Поле названия
-   - При открытии этого окна, фокус сразу на этом поле
-- Настройки в ряд:
-   - Default // кнопка
-      - default off
-      - Для визуализации состояния настройки используем star / star жёлтая
-   - Visibility // кнопка
+### Settings
+- Name field
+   - This field receives focus when the window opens
+- Settings in one row:
+   - Default // button
+      - Default: off
+      - Use a star / yellow star to show the setting state
+   - Visibility // button
       - Visible | Stealth
-      - Слово "Visualisation" не нужно, просто Visible | Stealth
-      - default Visible
-      - Для визуализации состояния настройки используем eye / eye-off
-      - Есть выключаемое модальное окно с пояснениями SPEC/ui/modal-explanations.md
+      - Do not show the word "Visualisation", only Visible | Stealth
+      - Default: Visible
+      - Use eye / eye-off to show the setting state
+      - A dismissible explanation modal is available as described in SPEC/ui/modal-explanations.md
    - Repeat
-      - Поле числа повторов
-      - Задаёт число повторов полного цикла кликов при каждом исполнении
-      - Ввод только чисел
-      - Максимум 999
-   - Mode: // кнопка
+      - Numeric repeat-count field
+      - Sets the number of repetitions of the complete click cycle for each execution
+      - Accepts numbers only
+      - Maximum: 999
+   - Mode // button
       - Position | Element
-      - Слово "mode" не нужно, просто Position | Element
-      - default Position
-      - Для визуализации состояния настройки используем code (для element) / crosshair (для position)
-      - Есть выключаемое модальное окно с пояснениями SPEC/ui/modal-explanations.md
+      - Do not show the word "Mode", only Position | Element
+      - Default: Position
+      - Use code for Element / crosshair for Position to show the setting state
+      - A dismissible explanation modal is available as described in SPEC/ui/modal-explanations.md
 
-### Кнопки
-- Кнопка сохранить и кнопка отмены
-- Располагаются **над** списком шагов
+### Buttons
+- Save and Cancel buttons
+- Located **above** the step list
 
-### Списки шагов
-- Без редактирования
-- В зависимости от настройки Mode:
-   - Position: прописаны позиции клика
-   - Element: прописаны элементы UI для клика
+### Step lists
+- Read-only
+- Content depends on the Mode setting:
+   - Position: click positions are listed
+   - Element: UI elements to click are listed
 
-### Закрытие окна
-- Крестик закрытия
-- При отрабатывании кнопок сохранения и отмены
-- При клике мимо окна
+### Closing the window
+- Close icon
+- Save and Cancel button actions
+- Click outside the window
 
-## В СПИСКЕ MACROSES
+## IN THE MACROSES LIST
 
-- Кнопки и поля, которые дублируют логику окна редактирования, отрабатывают аналогично
-- Есть отдельная возможность удаления
+- Buttons and fields that duplicate edit-window behavior work in the same way
+- A separate delete action is available

@@ -1,29 +1,29 @@
-# ИНТЕРФЕЙС
+# INTERFACE
 
-- Все иконки
-   - Только SVG 
-   - lucide из оригинального истончика
-   - Копируем их как код и вставляем в наш код
-- Любые модальные окна
-   - Если не вмещаются в popup целиком, то могут стролиться вертикально
-   - Есть выход через кнопку esc
+- All icons:
+   - SVG only
+   - Use Lucide icons from the original source
+   - Copy them as code and embed them in the project code
+- All modal windows:
+   - If they do not fit entirely in the popup, they may scroll vertically
+   - Can be closed with Esc
 
-## Цвета кнопок
+## Button colors
 
-- Синие кнопки (`btn-primary`, кнопка запуска):
-   - Фон синий `#012292`, иконки и текст белые `#fff`
-- Белые кнопки (все остальные `icon-btn`, `btn`):
-   - Фон белый/прозрачный, иконки и текст тёмно-серые `#4f5570`
-- Исключения (намеренно отличаются):
-   - Активная звёздочка дефолтного макроса: иконка с заливкой, жёлтая `#ffc400`
-   - Развёрнутая кнопка удаления: красный фон `#c83232`, текст и иконка белые
+- Blue buttons (`btn-primary`, launch button):
+   - Blue `#012292` background; white `#fff` icons and text
+- White buttons (all other `icon-btn`, `btn`):
+   - White/transparent background; dark gray `#4f5570` icons and text
+- Exceptions that intentionally differ:
+   - Active default-macro star: filled yellow `#ffc400` icon
+   - Expanded delete button: red `#c83232` background; white text and icon
 
-## Тултипы
+## Tooltips
 
-- Все тултипы кастомные; системные тултипы браузера (`title`) не используются
-- Следующие правила относятся к тултипам вне меню
-- Показываются при наведении курсора и фокусе с клавиатуры
-- Выполнены в едином лаконичном стиле, визуально отделены от основного интерфейса и обеспечивают хорошую читаемость
-- Содержат краткий локализованный текст; при необходимости допускается вторая строка с пояснением
-- Располагаются рядом с элементом и полностью помещаются в границах popup
-- Тултипы меню имеют отдельный стиль и описываются отдельно
+- All tooltips are custom; browser-native tooltips (`title`) are not used
+- The following rules apply to tooltips outside the menu
+- Shown on pointer hover and keyboard focus
+- Use one consistent, concise style, are visually separated from the main interface, and provide good readability
+- Contain short localized text; a second explanatory line is allowed when needed
+- Positioned near the element and remain fully within the popup boundaries
+- Menu tooltips use a separate style and are specified separately

@@ -1,10 +1,8 @@
 "use strict";
-// ../lib/our/page-operability/can-operate.ts
 function messageOptions(frameId) {
   return frameId !== void 0 && frameId !== 0 ? { frameId } : void 0;
 }
-// Состояние определяется отдельно для каждой вкладки и не кэшируется:
-// каждый вызов заново опрашивает content script указанной вкладки.
+// Do not cache this result: navigation can change operability within the same tab.
 async function canOperateOnTab(tabId, frameId) {
   if (!Number.isInteger(tabId)) return false;
   try {
@@ -15,8 +13,7 @@ async function canOperateOnTab(tabId, frameId) {
     );
     return response === true;
   } catch {
-    // Ошибка связи с content script означает, что страница недоступна
-    // (системные страницы, защищённые сайты, нет внедрённого скрипта).
+    // Communication failures cover restricted pages and missing content scripts.
     return false;
   }
 }

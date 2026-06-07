@@ -1,38 +1,38 @@
-# ХОТКЕИ
+# SHORTCUTS
 
 ---
 
-## ПРИМЕР ИСПОЛЬЗОВАНИЯ
-1. Пользователь нажал 
-   - Mac `cmd + shift + X`
-   - Не Mac `ctrl + shift + X`
-2. Пользователь отпустил клавиши
-3. Появился BADGE с подсказкой
-4. Пользователь нажал `M` на клавиатуре в течение 3 секунд (через 3 секунды таймаут и badge сбросятся)
-5. Запустился дефолтный macros, если таковой задан
+## USAGE EXAMPLE
+1. The user presses:
+   - Mac: `cmd + shift + X`
+   - Non-Mac: `ctrl + shift + X`
+2. The user releases the keys
+3. A badge with a prompt appears
+4. The user presses `M` within 3 seconds. After 3 seconds, the timeout expires and the badge resets
+5. The default macro starts, if one is assigned
 
 ---
 
-## ПРАВИЛА
+## RULES
 
-- Раскладка не должна влиять на работоспособность hotkeys. Мы можем добавить языки с нестандартными раскладками
-- Case не должен влиять на работоспособность hotkeys
-- В манифест пишем описание хоткея, но не задаём рекомендованные, так как там не задать префиксы, а esc будет конфликтовать
-- Хоткей `Ctrl+Shift+X` / `⇧⌘X` не вызывает badge, если на данной странице не удастся запуститься
-- Префикс и буква действия срабатывают при фокусе в поле ввода; символы в поле допустимы
+- Keyboard layout must not affect shortcut operation. Languages with non-standard layouts may be added
+- Letter case must not affect shortcut operation
+- Add a shortcut description to the manifest, but do not set suggested keys because prefixes cannot be configured there and Esc would conflict
+- `Ctrl+Shift+X` / `⇧⌘X` does not show the badge if the extension cannot run on the current page
+- The prefix and action letter work while an input field is focused; the characters may appear in the field
 
-### Перехват хоткеев
-- `Ctrl+Shift+X` / `⇧⌘X` слушает всегда
-- Все остальные хоткеи работают только когда расширение запущено (чтобы не блокировать другие приложения)
-- Если работаем с популярными хоткеями, то content-слушатель при active
+### Shortcut interception
+- Always listen for `Ctrl+Shift+X` / `⇧⌘X`
+- All other shortcuts work only while the extension is active, to avoid blocking other applications
+- When using common shortcuts, enable the content listener only while active
 
 ---
 
-## СТАНДАРТНЫЕ ХОТКЕИ
+## DEFAULT SHORTCUTS
 
-### Основной хоткей
-- Default: `Ctrl+Shift+X` --> клавиша `M`
-- Mac: `⇧⌘X` --> клавиша `M`
+### Primary shortcut
+- Default: `Ctrl+Shift+X` --> `M`
+- Mac: `⇧⌘X` --> `M`
 
-### Esc 
-- `Esc` = stop -- по умолчанию для всех проектов
+### Esc
+- `Esc` = stop -- default for all projects

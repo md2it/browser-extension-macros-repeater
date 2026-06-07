@@ -15,8 +15,7 @@ async function init() {
     return;
   }
 
-  // refreshExecutionStatus уже выставил статус по недавнему событию или
-  // активному исполнению — не перезаписываем подсказкой.
+  // Do not replace a recent event or active execution status with the initial hint.
   if (executionStatus?.lastEvent?.kind) {
     return;
   }

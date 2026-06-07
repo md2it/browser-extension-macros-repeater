@@ -1,29 +1,29 @@
 # VISUALISATION
 
-## ОБЩЕЕ
+## GENERAL
 
-Поддерживаем 2 режима:
+Two modes are supported:
 - Visible
-	- Есть отрисовка указателя, анимация
-	- Есть внедрение в DOM
+	- Renders and animates the pointer
+	- Injects elements into the DOM
 - Stealth
-	- Без визуализации
-	- Без внедрения в DOM
+	- No visualisation
+	- No DOM injection
 
 ## VISIBLE
 
-Наша цель показать пользователю каждый клик и перемещение виртуального указателя:
+The goal is to show every click and movement of the virtual pointer:
 
-- Минималистичный простой overlay, lucide mouse-pointer, #f00 (с заливкой внутри), 24х24px
-- Отражает виртуальное движение курсора
-- При клике на 50мс меняет стиль (mouse-pointer-click, #f00, 36х36) и становится дефолтным обратно
+- Minimal overlay using a filled Lucide mouse-pointer icon, `#f00`, 24x24 px
+- Represents virtual cursor movement
+- On click, changes for 50 ms to mouse-pointer-click, `#f00`, 36x36 px, then returns to the default state
 
 ## STEALTH
 
-Наша цель сделать так, чтобы сайты не считали поведение расширения ботом:
+The goal is to prevent websites from classifying the extension's behavior as automated:
 
-- Не внедряется в DOM (кроме сценария с включённой визуализацией кликов)
-- Не делает явно подозрительных действий
-- Не перехватывается security скриптами сайтов
-- Движения курсора и клики имитируют человека (лёгкий рандом и неровность)
-- Сайты просто не догадываются, что тут есть расширение
+- Does not inject elements into the DOM, except when click visualisation is enabled
+- Does not perform obviously suspicious actions
+- Is not detected by website security scripts
+- Cursor movements and clicks imitate human behavior with slight randomness and unevenness
+- Websites should not detect that the extension is present

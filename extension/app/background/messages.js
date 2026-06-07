@@ -1,7 +1,5 @@
 void syncActionBadge();
 
-// Клик по иконке: проверяем активную вкладку и решаем,
-// открыть обычный popup или отдельный popup с уведомлением.
 ext.action.onClicked.addListener((tab) => {
   void handleActionClick(tab);
 });
@@ -12,7 +10,6 @@ ext.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return;
   }
   if (isBlockedNoticeDismissedMessage(message)) {
-    // Уведомление о недоступной странице закрыто — дополнительных действий не требуется.
     return;
   }
   if (message.type === "recording-start") {
@@ -22,7 +19,7 @@ ext.runtime.onMessage.addListener((message, sender, sendResponse) => {
         sendResponse({ ok: false, error: "tab_id_required" });
         return;
       }
-      // Проверяем доступность страницы повторно непосредственно перед созданием macros.
+      // Recheck immediately before recording because the tab may have navigated.
       if (!(await canOperateOnTab(tabId))) {
         await showRestrictedNotice(tabId);
         sendResponse({ ok: false, error: "page_blocked" });

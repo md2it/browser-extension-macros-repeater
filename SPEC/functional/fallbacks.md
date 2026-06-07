@@ -1,45 +1,45 @@
-# НЕГАТИВНЫЕ СЦЕНАРИИ
+# FAILURE SCENARIOS
 
 ---
 
-## НЕВОЗМОЖНО ИСПОЛНИТЬ MACROS
+## MACRO CANNOT BE EXECUTED
 
-### Общие правила
-- Исполнение останавливается
-- Следующие шаги и повторы не запускаются
-- Пользователь получает уведомление с причиной остановки:
-   1. Появляется маленький popup с текстом
-      - Логика появления, исчезновения и пропорции — как у popup из SPEC/functional/page-operability.md
-      - Отличия: другой текст (причина остановки) и другой цвет
-   2. Есть уведомление на месте поясняющих текстов о недавних событиях в стандартном popup
-- Запись о негативном событии отображается красным
+### General rules
+- Execution stops
+- Subsequent steps and repetitions do not start
+- The user receives a notification explaining why execution stopped:
+   1. A small popup with text appears
+      - Appearance, disappearance, and proportions follow the popup in SPEC/functional/page-operability.md
+      - Differences: notification text states the reason for stopping and uses a different color
+   2. A notification is shown in place of the recent-event explanation text in the standard popup
+- A failure event is shown in red
 
-### Элемент не найден
-- Применимо к режиму Element
-- Причина: "сохранённый элемент отсутствует или больше не определяется по selector"
-- Уведомление "Элемент не найден"
+### Element not found
+- Applies to Element mode
+- Reason: "The saved element is missing or can no longer be identified by its selector"
+- Notification: "Element not found"
 
-### Пользователь остановил исполнение
-- Причина: пользователь остановил macros
-- Уведомление "Макрос остановлен"
+### User stopped execution
+- Reason: the user stopped the macro
+- Notification: "Macro stopped"
 
-### Пользователь начал взаимодействовать со страницей
-- Причина: пользователь кликнул во время исполнения
-- Уведомление "Макрос остановлен пользователем"
+### User started interacting with the page
+- Reason: the user clicked during execution
+- Notification: "Macro stopped by user"
 
-### Нет записанных шагов
-- Причина: macros не содержит шагов
-- Уведомление "В макросе нет шагов"
+### No recorded steps
+- Reason: the macro has no steps
+- Notification: "Macro has no steps"
 
-### Другие причины
-- Страница закрыта или перезагружена
-- Расширение потеряло доступ к странице
-- Произошла внутренняя ошибка
-- Или любая другая причина невозможности завершить макрос, включая нераспознанные причины
-- Уведомление "Не удалось выполнить макрос"
+### Other reasons
+- The page was closed or reloaded
+- The extension lost access to the page
+- An internal error occurred
+- Any other reason that prevents the macro from completing, including unknown reasons
+- Notification: "Could not execute macro"
 
 ---
 
-## НЕВОЗМОЖНО ЗАПУСТИТЬ РАСШИРЕНИЕ
+## EXTENSION CANNOT START
 
-- Описано в SPEC/functional/page-operability.md
+- Described in SPEC/functional/page-operability.md

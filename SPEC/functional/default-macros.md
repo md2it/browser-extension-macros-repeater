@@ -1,6 +1,6 @@
-# Дефолтный macros
+# DEFAULT MACRO
 
-- Кнопка с иконкой lucide star
-- Есть и в окне MACROSES, и в карточке редактирования
-- Единовременно может быть только 1 дефолтный
-- Именно дефолтный вызывается по хоткею
+- Button with a Lucide star icon
+- Available both on the MACROSES page and in the edit card
+- Only one macro can be the default at a time
+- The shortcut launches the default macro

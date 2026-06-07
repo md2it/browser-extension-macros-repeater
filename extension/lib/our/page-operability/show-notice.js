@@ -1,5 +1,4 @@
 "use strict";
-// ../lib/our/page-operability/show-notice.ts
 async function showBlockedNotice(tabId, config, payload, windowId) {
   const { popupHtml, sessionKey, logLabel } = config;
   void ext.storage.session.set({
@@ -14,7 +13,7 @@ async function showBlockedNotice(tabId, config, payload, windowId) {
     } catch {}
   }
   try {
-    // Временный popup назначается только проверяемой вкладке.
+    // Limit the temporary popup override to the tab being checked.
     await ext.action.setPopup({ tabId, popup: popupHtml });
     const openPopup = ext.action.openPopup;
     if (openPopup && winId !== void 0) {
@@ -23,7 +22,7 @@ async function showBlockedNotice(tabId, config, payload, windowId) {
     }
     throw new Error("action.openPopup unavailable");
   } catch (err) {
-    // Если отдельный popup открыть нельзя — открываем уведомление в новой вкладке.
+    // Fall back to a tab when the browser cannot open the action popup.
     console.warn(`[${logLabel}] openPopup notice failed, using tab:`, err);
     try {
       await ext.tabs.create({
@@ -34,7 +33,7 @@ async function showBlockedNotice(tabId, config, payload, windowId) {
       console.error(`[${logLabel}] blocked notice tab failed:`, err2);
     }
   } finally {
-    // После открытия или ошибки временная настройка popup обязательно сбрасывается.
+    // Always clear the temporary popup override.
     await ext.action.setPopup({ tabId, popup: "" });
   }
 }

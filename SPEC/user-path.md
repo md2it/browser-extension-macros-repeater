@@ -1,30 +1,30 @@
-# ПОЛЬЗОВАТЕЛЬСКИЙ ПУТЬ
+# USER JOURNEY
 
-## СОЗДАНИЕ MACROS
+## CREATING A MACRO
 
-1. Запустил расширение
-2. Включил режим создания сценария
-3. Сделал клики на странице
-4. Выключил режим создания сценария
-5. Опционально задал дополнительные параметры данного macros
+1. Launch the extension
+2. Enable macro creation mode
+3. Click items on the page
+4. Disable macro creation mode
+5. Optionally configure additional macro settings
 
-## ИСПОЛЕНИЕ MACROS
+## EXECUTING A MACRO
 
-1. Открыл popup расширения
-2. Запустил конкретный macros
-3. Отработал macros:
-   1. Закрылся popup
-   2. Курсор движется к первой ещё не кликнутой точке/элементу
-   3. Клик
-   4. Воспроизведение шагов 3.2-3.3 для каждого оставшегося шага
-   5. Когда все шаги прокликаны, то выход из цикла
-4. Расширение само завершило работу:
-   1. Открывается popup с информацией, что macros отработал
+1. Open the extension popup
+2. Start a specific macro
+3. The macro runs:
+   1. The popup closes
+   2. The cursor moves to the first point or element that has not yet been clicked
+   3. Click
+   4. Repeat steps 3.2-3.3 for each remaining step
+   5. Exit the loop after all steps have been clicked
+4. The extension completes automatically:
+   1. The popup opens with information that the macro has completed
 
-### Прерывание сценария пользователем
-- В любой момент работы исполнения macros, любой клик пользователя в браузере прерывает сценарий
-- Переход пользователя на другое окно OS (не браузера) не влияет на исполнение
-- Клики вне браузера не влияют на исполнение
+### User interruption
+- Any user click in the browser interrupts an executing macro
+- Switching to another OS window outside the browser does not affect execution
+- Clicks outside the browser do not affect execution
 
-### Запуск по shortcut
-- Если есть дефолтный macros, то shortcut запускает его. Шаг 1 не нужен, шаг 2 и есть shortcut, последующие шаги те же
+### Launch by shortcut
+- If a default macro exists, the shortcut starts it. Step 1 is omitted, step 2 is the shortcut itself, and the remaining steps are unchanged

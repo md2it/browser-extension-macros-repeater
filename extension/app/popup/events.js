@@ -1,6 +1,3 @@
-
-// Drag-and-drop reordering via pointer events
-
 let drag = null;
 
 function onDragMove(event) {

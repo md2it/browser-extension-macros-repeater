@@ -1,26 +1,26 @@
-# ИСПОЛЬЗОВАНИЕ ПАМЯТИ
+# MEMORY USAGE
 
-## ЦЕЛЬ
+## GOAL
 
-- Хранить только то, что необходимо для работы согласно функциональным и UI возможностям
-- Бережём памят и приватность
+- Store only the data required by the functional and UI capabilities
+- Protect memory efficiency and privacy
 
-## ХРАНИМ
+## STORED DATA
 
-### Постоянно
+### Persistent
 
-- Список макросов и их настройки: название, количество повторений, шаги, режим отображения
-- Какой макрос является дефолтным
+- Macro list and settings: name, repeat count, steps, and display mode
+- Which macro is the default
 
-### Временно (на время сессии)
+### Temporary (for the session)
 
-- Состояние активной записи: идёт ли запись, на какой вкладке, какие шаги уже накоплены
-- Состояние активного исполнения: идёт ли исполнение, какой макрос, сколько шагов выполнено, сколько осталось
-- Результат последнего исполнения: завершилось успешно, было остановлено или завершилось с ошибкой — хранится до первого открытия popup, после чего удаляется
+- Active recording state: whether recording is active, the tab where it is active, and the steps collected so far
+- Active execution state: whether execution is active, which macro is running, completed step count, and remaining step count
+- Result of the latest execution: completed successfully, stopped, or failed. Stored until the popup is opened for the first time, then deleted
 
-## УДАЛЯЕМ
+## DELETED DATA
 
-- При удалении макроса удаляется вся информация о данном макросе, включая статус дефолтного если он был задан
-- По завершении записи — данные сессии записи
-- По завершении исполнения — данные сессии исполнения
-- Устаревшие настройки предыдущих версий расширения удаляются автоматически
+- Deleting a macro removes all of its data, including default status if assigned
+- Recording session data is removed when recording ends
+- Execution session data is removed when execution ends
+- Obsolete settings from previous extension versions are removed automatically

@@ -38,8 +38,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     return;
   }
 
-  // Проверку доступности страницы обрабатывает отдельный слушатель
-  // (registerDocumentOperabilityProbeListener) — здесь её игнорируем.
+  // A dedicated listener handles operability probes.
   if (message.type === PROBE_DOCUMENT_OPERABILITY) {
     return;
   }
@@ -83,9 +82,8 @@ document.addEventListener(
     if (!shortcutState.isPrefixDown) {
       return;
     }
-    // Ждём, пока модификаторы (Cmd/Ctrl + Shift) будут полностью отпущены.
-    // На macOS keyup буквенной клавиши подавляется, пока удержан Cmd,
-    // поэтому ориентируемся на отпускание модификаторов, а не самой буквы.
+    // On macOS, keyup for the letter is suppressed while Cmd is held,
+    // so wait for the modifiers to be released instead.
     if (isPrefixChordHeld(event)) {
       return;
     }

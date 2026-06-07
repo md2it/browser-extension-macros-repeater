@@ -1,29 +1,29 @@
-# ДОСТУПНОСТЬ РАБОТЫ НА СТРАНИЦЕ
+# PAGE OPERABILITY
 
 ---
 
-## ПРОВЕРКА
+## CHECK
 
-- Повторяем логику `element-deleter`
-- Переиспользуем `../lib/our/page-operability`
-- Проверяем активную вкладку при клике по иконке и запуске по хоткею
-- Проверяем повторно непосредственно перед созданием или исполнением macros
-- Ошибка проверки, внедрения content script или связи с ним означает, что страница недоступна
-- Состояние определяется отдельно для каждой вкладки и не кэшируется после перехода на другую страницу
+- Follow the `element-deleter` logic
+- Reuse `../lib/our/page-operability`
+- Check the active tab when the extension icon is clicked and when launch is requested by shortcut
+- Check again immediately before creating or executing a macro
+- A check failure, content-script injection failure, or communication failure means the page is unavailable
+- State is determined separately for each tab and is not cached after navigation to another page
 
-## НЕДОСТУПНАЯ СТРАНИЦА
+## UNAVAILABLE PAGE
 
-- Обычный popup не открывается
-- Создание и исполнение macros не запускаются
-- Открывается отдельный popup с уведомлением:
-   - "На системных страницах и защищённых сайтах браузерные расширения не работают. Попробуй на другом сайте"
-- Текст и переводы повторяем из `element-deleter`
-- Если отдельный popup открыть нельзя, уведомление открывается в новой активной вкладке
-- Временный popup назначается только проверяемой вкладке
-- После открытия или ошибки временная настройка popup обязательно сбрасывается
-- Повторный запуск выполняет новую проверку
+- The standard popup does not open
+- Macro creation and execution do not start
+- A separate notification popup opens:
+   - "Browser extensions do not work on system pages or protected websites. Try another website"
+- Reuse the text and translations from `element-deleter`
+- If the separate popup cannot be opened, the notification opens in a new active tab
+- The temporary popup is assigned only to the tab being checked
+- The temporary popup setting is always cleared after opening or after an error
+- Each subsequent launch performs a new check
 
-## ДОСТУПНАЯ СТРАНИЦА
+## AVAILABLE PAGE
 
-- Открывается обычный popup
-- Создание и исполнение macros работают без предупреждения
+- The standard popup opens
+- Macro creation and execution work without a warning

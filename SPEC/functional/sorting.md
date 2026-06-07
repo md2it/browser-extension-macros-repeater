@@ -1,17 +1,17 @@
-# СОРТИРОВКА MACROS
+# MACRO SORTING
 
 ---
 
 ## DRAG-AND-DROP
 
-- У каждого macros есть отдельная ручка для перетаскивания
-- Пользователь нажимает на ручку, перетаскивает macros на нужное место и отпускает
-- После отпускания новый порядок macros сразу сохраняется
-- Сохранённый порядок используется при последующих открытиях popup
-- Перетаскивание работает без тайм-аутов, ожиданий и промежуточных состояний
+- Each macro has a dedicated drag handle
+- The user presses the handle, drags the macro to the desired position, and releases it
+- The new macro order is saved immediately after release
+- The saved order is used when the popup is opened again
+- Dragging works without timeouts, waiting periods, or intermediate states
 
-## ДЕФОЛТНЫЙ MACROS
+## DEFAULT MACRO
 
-- При последующем открытии popup дефолтный macros отображается первым в списке
-- В момент назначения macros дефолтным порядок открытого списка не меняется
-- Перемещение дефолтного macros на первое место применяется только при следующем открытии popup
+- The default macro appears first the next time the popup is opened
+- Assigning a macro as default does not change the order of the currently open list
+- Moving the default macro to the first position takes effect only when the popup is opened again

@@ -1,11 +1,11 @@
 # POPUP WINDOW
 
-- Высота окна зависит от количества и размера элементов
-   - Минимальная высота 10см
-   - Если элементов много и они не помещаются в 10см, то окно станвоится больше по высоте, но не более экрана пользователя
-- Окно открывается при запуске как popup под панелью браузера
-- Закрывается:
-   - При клике вне popup
-   - На время любого из режимов (создания нового, исполнения имеющегося)
-- Слева вертикальное меню
-- Содержит одно из PAGES, кроме WELCOME (которое открывается как отдельная вкладка)
+- Window height depends on the number and size of elements
+   - Minimum height: 10 cm
+   - If the elements do not fit within 10 cm, the window grows vertically but does not exceed the user's screen height
+- Opens as a popup below the browser toolbar when launched
+- Closes:
+   - When the user clicks outside the popup
+   - While any mode is active, including creation and execution
+- A vertical menu is displayed on the left
+- Contains one of the PAGES, except WELCOME, which opens in a separate tab

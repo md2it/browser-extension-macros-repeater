@@ -73,8 +73,6 @@ async function refreshExecutionStatus({ silent = false } = {}) {
   return response;
 }
 
-// Сопоставляет событие исполнения с текстом уведомления.
-// Негативные сценарии помечаются error: true (отображаются красным).
 function describeExecutionEvent(event) {
   if (!event?.kind) {
     return null;
@@ -156,7 +154,7 @@ async function startExecution(macroId) {
     }
 
     if (response?.error === "page_blocked") {
-      // Отдельный popup с уведомлением уже открыт фоновым скриптом.
+      // The background script already opened the restricted-page notice.
       window.close();
       return;
     }

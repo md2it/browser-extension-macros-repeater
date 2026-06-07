@@ -1,5 +1,4 @@
 "use strict";
-// ../lib/our/page-operability/content-probe.ts
 var PROBE_DOCUMENT_OPERABILITY = "PROBE_DOCUMENT_OPERABILITY";
 function isProbeDocumentOperabilityMessage(message) {
   if (typeof message !== "object" || message === null) return false;

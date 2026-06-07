@@ -1,31 +1,34 @@
 # SETTINGS PAGE
 
 - "Language"
-	- Кнопки
+	- Buttons
 	- EN, ES, FR, DE, RU, 中文, عربي
-	- Референс Element copier
-	- При первом запуске язык определяется по языкам браузера
-	- Если язык браузера не поддерживается, используется EN
-	- Выбранный язык сохраняется и применяется ко всему пользовательскому интерфейсу
-	- Для عربي интерфейс отображается справа налево, порядок кнопок языков не меняется
+	- Reference: Element Copier
+	- On first launch, the language is detected from the browser languages
+	- If the browser language is unsupported, EN is used
+	- The selected language is saved and applied to the entire user interface
+	- For عربي, the interface uses right-to-left layout; the language button order does not change
 - "Execution speed"
-	- Минималистичный переключатель без иконки
-	- Показывает только название настройки и текущее значение
-	- Один клик меняет значение на следующее по кругу:
+	- Minimal switch without an icon
+	- Shows only the setting name and current value
+	- One click cycles to the next value:
 		- `0.25×`
 		- `0.5×`
 		- `1×`
 		- `2×`
-	- Значение по умолчанию: `1×`
-	- Настройка общая для расширения и применяется ко всем macros
-	- Настройка влияет только на дополнительную темповую задержку между шагами и не изменяет существующие интервалы исполнения
-	- Конкретные интервалы и порядок их применения: [Режим исполнения macros](../functional/execute-macros.md#скорость-исполнения)
+	- Default value: `1×`
+	- This is an extension-wide setting and applies to all macros
+	- The setting affects only the additional pacing delay between steps and does not change existing execution intervals
+	- Specific intervals and their application order: [Macro execution mode](../functional/execute-macros.md#execution-speed)
 - "Skip explanations for new macros"
-	- toggler
-	- default off
+	- Toggler
+	- Default: off
 - "Skip explanations for Visible / Stealth setting"
-	- toggler
-	- default off
+	- Toggler
+	- Default: off
 - "Skip explanations for Position / Element setting"
-	- toggler
-	- default off
+	- Toggler
+	- Default: off
+- "Dark theme"
+	- Toggler
+	- Default: off

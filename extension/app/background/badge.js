@@ -153,8 +153,7 @@ async function startDefaultMacroFromTab(tabId) {
     : [];
   const macroName = typeof macro.name === "string" && macro.name.trim() ? macro.name.trim() : "macros";
   if (!steps.length) {
-    // Запуск по хоткею без открытого popup: сохраняем событие,
-    // чтобы уведомление "В макросе нет шагов" показалось при открытии popup.
+    // Preserve the failure so the popup can report a shortcut-triggered run.
     await writeExecutionLastEvent({ kind: "empty-steps", macroName });
     return { ok: false, error: "empty_steps" };
   }

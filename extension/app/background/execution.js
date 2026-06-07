@@ -9,7 +9,7 @@ async function startExecutionOnTab({ tabId, macroId, macroName, repeats, trackMo
     return { ok: false, error: "tab_id_required" };
   }
 
-  // Проверяем доступность страницы повторно непосредственно перед исполнением.
+  // Recheck immediately before execution because the tab may have navigated.
   if (!(await canOperateOnTab(tabId))) {
     await showRestrictedNotice(tabId);
     return { ok: false, error: "page_blocked" };
@@ -110,7 +110,6 @@ async function getRuntimeExecutionState() {
   };
 }
 
-// Сопоставляет сообщение об остановке исполнения с типом негативного события.
 function resolveStopEventKind(message) {
   if (message?.type === "execution-user-click-interrupt") {
     return "user-click";
@@ -144,8 +143,7 @@ async function sendRecordingListenerMessage(tabId, message) {
   }
 }
 
-// Открывает обычный popup расширения для конкретной вкладки.
-// Временный popup назначается только этой вкладке и сбрасывается после открытия.
+// Scope the temporary popup override to this tab and clear it after opening.
 async function openMainPopup(tabId, windowId) {
   if (!ext.action || typeof ext.action.openPopup !== "function") {
     return false;
@@ -174,8 +172,6 @@ async function openMainPopup(tabId, windowId) {
   }
 }
 
-// Клик по иконке: проверяем активную вкладку и открываем обычный popup
-// либо отдельный popup с уведомлением о недоступной странице.
 async function handleActionClick(tab) {
   const tabId = Number.isInteger(tab?.id) ? tab.id : null;
   if (tabId === null) {

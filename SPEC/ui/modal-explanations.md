@@ -1,32 +1,32 @@
-# EXPLANAMION MODAL WINDOWS
+# EXPLANATION MODAL WINDOWS
 
-## ОБЩИЕ ПРАВИЛА ДЛЯ ВСЕХ МОДАЛЬНЫХ ОКОН ЭТОГО ДОКУМЕНТА
+## GENERAL RULES FOR ALL MODAL WINDOWS IN THIS DOCUMENT
 
-- Центрованный заголовок
-- Крестик закрытия (не влияет на положение заголовка)
-- Поясняющий текст
-- Тогглер выключения "Don't show me again" над кнопками выбора
+- Centered title
+- Close icon that does not affect title alignment
+- Explanatory text
+- "Don't show me again" toggler above the choice buttons
 
-## ПЕРЕЧЕНЬ ОКОН
+## MODAL WINDOWS
 
-- New macros
-   - Текст:
-      - Когда запустите режим записи, то будет мигать красная точка, значит запись идёт. Просто нажимайте то, что вам нужно, расширение запомнит все клики. Когда закончите, ещё раз нажмите на кнопку расширения.
-   - Кнопки:
-      - Start цветная
-      - Cancel серая
+- New macro
+   - Text:
+      - When recording mode starts, a red dot flashes to indicate that recording is active. Click the items you need, and the extension will remember every click. When finished, click the extension button again.
+   - Buttons:
+      - Colored Start button
+      - Gray Cancel button
 - Visible / Stealth
-   - Текст:
-      - **Visible** будет показывать перемещение виртуальной мышки. Это удобнее в большинстве случаев.
-      - **Stealth** будет делать клики точно так же, но без визуализации.
-      - В любом случае любой ваш клик (во время воспроизведения) прервёт исполнение даже в таком режиме.
-   - Кнопки:
-      - Visible цветная
-      - Stealth серая
+   - Text:
+      - **Visible** shows the movement of the virtual mouse. This is more convenient in most cases.
+      - **Stealth** performs the same clicks without visualisation.
+      - In either mode, any click you make during playback interrupts execution.
+   - Buttons:
+      - Colored Visible button
+      - Gray Stealth button
 - Position / Element
-   - Текст:
-      - **Position** использует точное положение кликов на сайте. В процессе воспроизведения, окно браузера должен быть таким же как при записи! Иначе макрос может промахнуться.
-      - **Element** находит цель клика по элементу страницы. При изменении элемента макрос может перестать работать. Рекомендуется **только для IT специалистов** (или если вы уверены, что вам нужно имено так).
-   - Кнопки:
-      - Position цветная
-      - Element серая
+   - Text:
+      - **Position** uses the exact click positions on the website. During playback, the browser window must have the same layout as during recording, or the macro may miss its targets.
+      - **Element** finds each click target by page element. If an element changes, the macro may stop working. Recommended **only for IT professionals**, or when you are certain this mode is required.
+   - Buttons:
+      - Colored Position button
+      - Gray Element button

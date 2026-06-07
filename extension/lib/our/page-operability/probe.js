@@ -1,5 +1,4 @@
 "use strict";
-// ../lib/our/page-operability/probe.ts
 function probeDocumentOperability() {
   try {
     const root = document.documentElement ?? document.body;
