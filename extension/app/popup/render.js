@@ -26,7 +26,7 @@ function render() {
     row.className = "macro-item";
     row.dataset.macroId = macro.id;
     row.innerHTML = `
-      <span class="drag-handle" draggable="true" data-action="drag-handle" aria-hidden="true">${iconSet.gripVertical}</span>
+      <span class="drag-handle" data-action="drag-handle" aria-hidden="true">${iconSet.gripVertical}</span>
       <div class="macro-row">
         <div class="macro-main">
           <button class="icon-btn run-btn" type="button" data-action="run" data-id="${macro.id}" data-tooltip="${t("run")}" aria-label="${t("run")}">${iconSet.play}</button>

@@ -1,83 +1,129 @@
 
-// Drag-and-drop reordering
+// Drag-and-drop reordering via pointer events
 
-let dragSrcId = null;
+let drag = null;
 
-refs.list.addEventListener("dragstart", (event) => {
-  if (!event.target.closest("[data-action='drag-handle']")) {
-    event.preventDefault();
+function onDragMove(event) {
+  if (!drag) {
     return;
   }
 
-  const row = event.target.closest("li[data-macro-id]");
-  if (!row) {
-    event.preventDefault();
+  const deltaY = event.clientY - drag.startY;
+  drag.item.style.transform = `translateY(${deltaY}px)`;
+
+  const dragCenter = drag.rects[drag.dragIndex].top + drag.rects[drag.dragIndex].height / 2 + deltaY;
+  let newSlot = 0;
+  let minDist = Infinity;
+  for (let i = 0; i < drag.items.length; i++) {
+    const dist = Math.abs(dragCenter - (drag.rects[i].top + drag.rects[i].height / 2));
+    if (dist < minDist) {
+      minDist = dist;
+      newSlot = i;
+    }
+  }
+
+  drag.currentSlot = newSlot;
+
+  for (let i = 0; i < drag.items.length; i++) {
+    if (i === drag.dragIndex) {
+      continue;
+    }
+    let shift = 0;
+    if (newSlot > drag.dragIndex && i > drag.dragIndex && i <= newSlot) {
+      shift = -drag.slotHeight;
+    } else if (newSlot < drag.dragIndex && i >= newSlot && i < drag.dragIndex) {
+      shift = drag.slotHeight;
+    }
+    drag.items[i].style.transform = shift ? `translateY(${shift}px)` : "";
+  }
+}
+
+function onDragEnd() {
+  document.removeEventListener("pointermove", onDragMove);
+  document.removeEventListener("pointerup", onDragEnd);
+  document.removeEventListener("pointercancel", onDragEnd);
+  document.body.style.cursor = "";
+
+  if (!drag) {
     return;
   }
 
-  dragSrcId = row.dataset.macroId;
-  event.dataTransfer.effectAllowed = "move";
+  const { dragIndex, currentSlot, macroId, items, item } = drag;
+  drag = null;
 
-  const card = row.querySelector(".macro-row");
+  for (const el of items) {
+    el.style.transform = "";
+    el.style.transition = "";
+    el.style.position = "";
+    el.style.zIndex = "";
+  }
+
+  const card = item.querySelector(".macro-row");
   if (card) {
-    event.dataTransfer.setDragImage(card, card.offsetWidth / 2, card.offsetHeight / 2);
+    card.style.boxShadow = "";
   }
 
-  row.classList.add("drag-source");
-});
-
-refs.list.addEventListener("dragend", () => {
-  dragSrcId = null;
-  for (const row of refs.list.querySelectorAll("li[data-macro-id]")) {
-    row.classList.remove("drag-source", "drag-over");
-  }
-});
-
-refs.list.addEventListener("dragover", (event) => {
-  if (!dragSrcId) {
-    return;
+  if (dragIndex !== currentSlot) {
+    const srcIndex = macros.findIndex((m) => m.id === macroId);
+    if (srcIndex >= 0) {
+      const [moved] = macros.splice(srcIndex, 1);
+      macros.splice(currentSlot, 0, moved);
+      void persistMacros();
+    }
   }
 
-  event.preventDefault();
-  event.dataTransfer.dropEffect = "move";
-
-  const row = event.target.closest("li[data-macro-id]");
-  if (!row || row.dataset.macroId === dragSrcId) {
-    return;
-  }
-
-  for (const r of refs.list.querySelectorAll(".drag-over")) {
-    r.classList.remove("drag-over");
-  }
-  row.classList.add("drag-over");
-});
-
-refs.list.addEventListener("dragleave", (event) => {
-  const row = event.target.closest("li[data-macro-id]");
-  if (row && !row.contains(event.relatedTarget)) {
-    row.classList.remove("drag-over");
-  }
-});
-
-refs.list.addEventListener("drop", (event) => {
-  event.preventDefault();
-
-  const targetRow = event.target.closest("li[data-macro-id]");
-  if (!dragSrcId || !targetRow || targetRow.dataset.macroId === dragSrcId) {
-    return;
-  }
-
-  const srcIndex = macros.findIndex((m) => m.id === dragSrcId);
-  const dstIndex = macros.findIndex((m) => m.id === targetRow.dataset.macroId);
-  if (srcIndex < 0 || dstIndex < 0) {
-    return;
-  }
-
-  const [moved] = macros.splice(srcIndex, 1);
-  macros.splice(dstIndex, 0, moved);
-
-  void persistMacros();
   render();
+}
+
+refs.list.addEventListener("pointerdown", (event) => {
+  const handle = event.target.closest("[data-action='drag-handle']");
+  if (!handle) {
+    return;
+  }
+
+  const dragItem = handle.closest("li[data-macro-id]");
+  if (!dragItem) {
+    return;
+  }
+
+  event.preventDefault();
+
+  const items = [...refs.list.querySelectorAll("li[data-macro-id]")];
+  const dragIndex = items.indexOf(dragItem);
+  const rects = items.map((el) => el.getBoundingClientRect());
+  const gap = items.length > 1 ? rects[1].top - rects[0].bottom : 8;
+  const slotHeight = rects[dragIndex].height + gap;
+
+  dragItem.style.position = "relative";
+  dragItem.style.zIndex = "100";
+
+  const card = dragItem.querySelector(".macro-row");
+  if (card) {
+    card.style.boxShadow = "0 8px 24px rgba(19, 25, 48, 0.18)";
+  }
+
+  for (let i = 0; i < items.length; i++) {
+    if (i !== dragIndex) {
+      items[i].style.transition = "transform 150ms ease";
+    }
+  }
+
+  document.body.style.cursor = "grabbing";
+
+  drag = {
+    item: dragItem,
+    items,
+    rects,
+    startY: event.clientY,
+    dragIndex,
+    currentSlot: dragIndex,
+    slotHeight,
+    macroId: dragItem.dataset.macroId,
+  };
+
+  document.addEventListener("pointermove", onDragMove);
+  document.addEventListener("pointerup", onDragEnd);
+  document.addEventListener("pointercancel", onDragEnd);
 });
 
 refs.list.addEventListener("click", (event) => {

@@ -181,11 +181,3 @@ body {
   height: 16px;
 }
 
-.macro-item.drag-source .macro-row {
-  opacity: 0.4;
-}
-
-.macro-item.drag-over .macro-row {
-  outline: 2px solid #012292;
-  outline-offset: 1px;
-}
