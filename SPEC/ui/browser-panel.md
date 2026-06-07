@@ -4,7 +4,7 @@
 
 ## ICON
 - Background: `#012292`
-- w-boxed.svg, `#fff`
+- mouse-pointer-click, `#fff`
 
 ---
 
