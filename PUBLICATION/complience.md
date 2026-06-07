@@ -11,5 +11,11 @@ Macros Repeater records a user-defined sequence of clicks on the current web pag
 - `tabs`
   Identify the active tab when the user opens the extension or starts a macro, communicate with the content script in that tab, stop active recording or execution, and open extension-owned notification or welcome pages when required. The extension does not read browsing history or send tab information to external services.
 
-- `host_permissions` (`<all_urls>`)
+- `scripting`
+  Probe whether the extension can operate on the current page when the content script is not yet responding (for example, immediately after a navigation or on a page that loaded before the extension was installed). The probe function runs a minimal operability check and returns a boolean — no page content is read or transmitted.
+
+- `activeTab`
+  Confirm that the extension is allowed to interact with the tab the user is currently viewing when they explicitly invoke the extension. No background access to tabs occurs.
+
+- Host access (`<all_urls>` via `content_scripts`)
   Users may need to record and repeat clicks on any website they choose, including localhost, development environments, and public web pages. The content script records clicks only while the user has explicitly started recording and executes only a macro the user explicitly starts. It does not intercept network requests, collect credentials, or transmit page content.

@@ -1,4 +1,7 @@
 "use strict";
+function scriptingTarget(tabId, frameId) {
+  return frameId !== void 0 && frameId !== 0 ? { tabId, frameIds: [frameId] } : { tabId };
+}
 function messageOptions(frameId) {
   return frameId !== void 0 && frameId !== 0 ? { frameId } : void 0;
 }
@@ -11,9 +14,19 @@ async function canOperateOnTab(tabId, frameId) {
       { type: PROBE_DOCUMENT_OPERABILITY },
       messageOptions(frameId),
     );
-    return response === true;
+    if (response === true) return true;
+    if (response === false) return false;
   } catch {
-    // Communication failures cover restricted pages and missing content scripts.
+    // Fall through to scripting probe.
+  }
+  try {
+    const [result] = await ext.scripting.executeScript({
+      target: scriptingTarget(tabId, frameId),
+      func: probeDocumentOperability,
+    });
+    return result?.result === true;
+  } catch {
+    // Communication failures cover restricted pages and missing host permissions.
     return false;
   }
 }
