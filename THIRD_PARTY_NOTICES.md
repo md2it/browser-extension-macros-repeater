@@ -1,6 +1,6 @@
 # THIRD-PARTY NOTICES
 
-### Lucide Icons
+## Lucide Icons
 
 - https://lucide.dev/license
 - https://github.com/lucide-icons/lucide/blob/main/LICENSE
