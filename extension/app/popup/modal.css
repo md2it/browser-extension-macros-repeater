@@ -48,6 +48,105 @@
   fill: currentColor;
 }
 
+.icon-btn:not(.default-btn),
+.macro-mode-icon,
+.macro-display-moves-icon,
+.modal-close-btn,
+.edit-name-field,
+.edit-name-clear-btn,
+.repeat-field {
+  position: relative;
+}
+
+.icon-btn:not(.default-btn)[data-tooltip]::after,
+.macro-mode-icon[data-tooltip]::after,
+.macro-display-moves-icon[data-tooltip]::after,
+.edit-name-clear-btn[data-tooltip]::after,
+.repeat-field[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 5px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  padding: 4px 7px;
+  border-radius: 5px;
+  color: #fff;
+  background: #111827;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.icon-btn:not(.default-btn):hover[data-tooltip]::after,
+.icon-btn:not(.default-btn):focus-visible[data-tooltip]::after,
+.macro-mode-icon:hover[data-tooltip]::after,
+.macro-display-moves-icon:hover[data-tooltip]::after,
+.edit-name-clear-btn:hover[data-tooltip]::after,
+.edit-name-clear-btn:focus-visible[data-tooltip]::after,
+.repeat-field:hover[data-tooltip]::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+.edit-name-field[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 5px);
+  right: 0;
+  z-index: 10;
+  padding: 4px 7px;
+  border-radius: 5px;
+  color: #fff;
+  background: #111827;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.edit-name-field:hover[data-tooltip]::after,
+.edit-name-field:focus-within[data-tooltip]::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-close-btn[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 5px);
+  right: 0;
+  z-index: 10;
+  padding: 4px 7px;
+  border-radius: 5px;
+  color: #fff;
+  background: #111827;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.modal-close-btn:hover[data-tooltip]::after,
+.modal-close-btn:focus-visible[data-tooltip]::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+.repeat-field {
+  display: inline-flex;
+}
+
 .default-btn {
   position: relative;
 }

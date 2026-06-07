@@ -11,6 +11,8 @@ importScripts(
   "lib/our/page-operability/show-notice.js",
   "app/page-operability/constants.js",
   "app/page-operability/notice.js",
+  "app/execution-notice/constants.js",
+  "app/execution-notice/notice.js",
   "app/background/state.js",
   "app/background/storage.js",
   "app/background/execution.js",

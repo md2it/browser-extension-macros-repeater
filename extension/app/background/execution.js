@@ -19,13 +19,15 @@ async function startExecutionOnTab({ tabId, macroId, macroName, repeats, trackMo
     return { ok: false, error: "empty_steps" };
   }
 
-  const totalSteps = steps.length * repeats;
+  const stepsPerCycle = steps.length;
+  const totalSteps = stepsPerCycle * repeats;
   const state = {
     isRunning: true,
     macroId,
     macroName,
     tabId,
     repeats,
+    stepsPerCycle,
     startedAt: Date.now(),
     completedSteps: 0,
     totalSteps,
@@ -101,6 +103,7 @@ async function getRuntimeExecutionState() {
     tabId: Number.isInteger(state.tabId) ? state.tabId : null,
     repeats: Number.isFinite(Number(state.repeats)) ? Number(state.repeats) : 1,
     startedAt: Number(state.startedAt) || Date.now(),
+    stepsPerCycle: Number.isFinite(Number(state.stepsPerCycle)) && Number(state.stepsPerCycle) > 0 ? Number(state.stepsPerCycle) : 1,
     completedSteps: Number.isFinite(Number(state.completedSteps)) ? Number(state.completedSteps) : 0,
     totalSteps: Number.isFinite(Number(state.totalSteps)) ? Number(state.totalSteps) : 0,
     remainingMs: Number.isFinite(Number(state.remainingMs)) ? Number(state.remainingMs) : 0

@@ -171,6 +171,7 @@ ext.runtime.onMessage.addListener((message, sender, sendResponse) => {
         remainingMs: Number.isFinite(remainingMsRaw) ? Math.max(0, remainingMsRaw) : currentState.remainingMs
       };
       await writeExecutionState(nextState);
+      await syncActionBadge();
       sendResponse({ ok: true });
     })().catch(() => sendResponse({ ok: false, error: "execution_progress_failed" }));
     return true;
@@ -206,10 +207,9 @@ ext.runtime.onMessage.addListener((message, sender, sendResponse) => {
         sendResponse({ ok: true, ignored: true, reason: "other_tab" });
         return;
       }
-      await stopExecutionWithEvent({
-        kind: resolveStopEventKind(message),
-        macroName: currentState.macroName
-      });
+      const kind = resolveStopEventKind(message);
+      await stopExecutionWithEvent({ kind, macroName: currentState.macroName });
+      void showExecutionErrorNotice(currentState.tabId, kind);
       sendResponse({ ok: true });
     })().catch(() => sendResponse({ ok: false, error: "execution_stopped_failed" }));
     return true;
@@ -267,10 +267,8 @@ ext.runtime.onMessage.addListener((message, sender, sendResponse) => {
           // Ignore: tab may be closed or unavailable.
         }
       }
-      await stopExecutionWithEvent({
-        kind: "stopped",
-        macroName: currentState.macroName
-      });
+      await stopExecutionWithEvent({ kind: "stopped", macroName: currentState.macroName });
+      void showExecutionErrorNotice(currentState.tabId, "stopped");
       sendResponse({ ok: true, wasRunning: true, stoppedMacroName: currentState.macroName });
     })().catch(() => sendResponse({ ok: false, error: "shortcut_stop_failed" }));
     return true;

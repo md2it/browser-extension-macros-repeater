@@ -91,8 +91,10 @@ async function syncActionBadge() {
 
   const executionState = await getRuntimeExecutionState();
   if (executionState?.isRunning) {
-    ensureBadgeAnimation("run");
-    await setActiveBadgeVisual("run");
+    clearBadgeAnimation();
+    const completedCycles = Math.floor(executionState.completedSteps / executionState.stepsPerCycle);
+    const remainingCycles = Math.max(0, executionState.repeats - completedCycles);
+    await setActionBadgeText(String(Math.min(remainingCycles, 999)));
     return;
   }
 

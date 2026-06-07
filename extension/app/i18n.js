@@ -380,7 +380,7 @@ function applyTranslations() {
   }
   for (const element of document.querySelectorAll("[data-i18n-title]")) {
     const text = t(element.dataset.i18nTitle);
-    element.title = text;
+    element.dataset.tooltip = text;
     element.setAttribute("aria-label", text);
   }
 }

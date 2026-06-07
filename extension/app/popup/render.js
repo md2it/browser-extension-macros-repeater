@@ -26,16 +26,16 @@ function render() {
     row.className = "macro-row";
     row.innerHTML = `
       <div class="macro-main">
-        <button class="icon-btn run-btn" type="button" data-action="run" data-id="${macro.id}" title="${t("run")}" aria-label="${t("run")}">${iconSet.play}</button>
-        <span class="macro-mode-icon" aria-hidden="true" title="${modeTitle}">${modeIcon}</span>
-        <span class="macro-display-moves-icon ${displayMovesClassName}" aria-hidden="true" title="${displayMovesTitle}">${displayMovesIcon}</span>
+        <button class="icon-btn run-btn" type="button" data-action="run" data-id="${macro.id}" data-tooltip="${t("run")}" aria-label="${t("run")}">${iconSet.play}</button>
+        <span class="macro-mode-icon" aria-hidden="true" data-tooltip="${modeTitle}">${modeIcon}</span>
+        <span class="macro-display-moves-icon ${displayMovesClassName}" aria-hidden="true" data-tooltip="${displayMovesTitle}">${displayMovesIcon}</span>
         <span class="macro-name">${macro.name}</span>
       </div>
       <div class="macro-actions">
         <button class="icon-btn default-btn ${isDefault ? "active" : ""}" type="button" data-action="set-default" data-id="${macro.id}" data-tooltip="${defaultTitle}" data-tooltip-detail="${defaultDetail}" aria-label="${defaultTitle}. ${defaultDetail}" aria-pressed="${isDefault}">${iconSet.star}</button>
-        <input class="macro-repeats repeat-input" type="number" min="1" max="999" step="1" inputmode="numeric" value="${normalizeRepeats(macro.repeats)}" data-action="set-repeats" data-id="${macro.id}" title="${t("repeat")}" aria-label="${t("repeat")}" />
-        <button class="icon-btn" type="button" data-action="edit" data-id="${macro.id}" title="${t("edit")}" aria-label="${t("edit")}">${iconSet.squarePen}</button>
-        <button class="icon-btn delete-btn" type="button" data-action="delete" data-id="${macro.id}" title="${t("delete")}" aria-label="${t("delete")}">${iconSet.trash}</button>
+        <span class="repeat-field" data-tooltip="${t("repeat")}"><input class="macro-repeats repeat-input" type="number" min="1" max="999" step="1" inputmode="numeric" value="${normalizeRepeats(macro.repeats)}" data-action="set-repeats" data-id="${macro.id}" aria-label="${t("repeat")}" /></span>
+        <button class="icon-btn" type="button" data-action="edit" data-id="${macro.id}" data-tooltip="${t("edit")}" aria-label="${t("edit")}">${iconSet.squarePen}</button>
+        <button class="icon-btn delete-btn" type="button" data-action="delete" data-id="${macro.id}" data-tooltip="${t("delete")}" aria-label="${t("delete")}">${iconSet.trash}</button>
       </div>
     `;
     refs.list.append(row);
@@ -56,7 +56,7 @@ function clearDeleteConfirmation() {
     const label = button.querySelector(".delete-btn-label");
     button.classList.remove("delete-btn-armed");
     button.style.width = "28px";
-    button.title = t("delete");
+    button.dataset.tooltip = t("delete");
     button.setAttribute("aria-label", t("delete"));
 
     if (label) {
@@ -87,7 +87,7 @@ function clearDeleteConfirmation() {
 function armDeleteButton(button, macroId) {
   clearDeleteConfirmation();
   state.pendingDeleteMacroId = macroId;
-  button.title = t("confirmDelete");
+  button.dataset.tooltip = t("confirmDelete");
   button.setAttribute("aria-label", t("confirmDelete"));
   for (const existingLabel of button.querySelectorAll(".delete-btn-label")) {
     existingLabel.remove();
