@@ -270,5 +270,16 @@ ext.runtime.onMessage.addListener((message, sender, sendResponse) => {
     })().catch(() => sendResponse({ ok: false, error: "shortcut_stop_failed" }));
     return true;
   }
+  if (message.type === "WATCH_PIN_STATUS") {
+    const tabId = sender?.tab?.id;
+    if (Number.isInteger(tabId)) watchWelcomePinStatus2(tabId);
+    return;
+  }
   sendResponse({ ok: false, error: "unknown_message_type" });
+});
+
+ext.runtime.onInstalled.addListener((details) => {
+  if (details.reason === "install") {
+    void showWelcome();
+  }
 });

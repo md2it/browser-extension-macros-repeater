@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
+  "default_locale": "en",
   "name": "Macros Repeater",
   "description": "Minimal dev skeleton for macros repeater extension.",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "background": {
     "service_worker": "sw.js",
     "scripts": [
@@ -33,13 +34,16 @@
       "128": "icons/icon-128.png"
     }
   },
+  "host_permissions": [
+    "<all_urls>"
+  ],
   "permissions": [
     "storage",
     "tabs"
   ],
   "commands": {
     "macros-prefix": {
-      "description": "Show macros shortcut hint"
+      "description": "__MSG_commandRunDefaultMacro__"
     }
   },
   "content_scripts": [
