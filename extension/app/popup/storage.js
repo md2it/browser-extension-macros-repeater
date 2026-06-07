@@ -19,10 +19,10 @@ function setEditDisplayMoves(enabled) {
   const displayMovesEnabled = Boolean(enabled);
   refs.editDisplayMoves.checked = displayMovesEnabled;
   refs.editDisplayMovesIcon.innerHTML = displayMovesEnabled ? iconSet.eye : iconSet.eyeOff;
-  refs.editDisplayMovesLabel.textContent = displayMovesEnabled ? "Visible" : "Stealth";
+  refs.editDisplayMovesLabel.textContent = t(displayMovesEnabled ? "visible" : "stealth");
   refs.editDisplayMovesToggle.classList.toggle("display-moves-on", displayMovesEnabled);
   refs.editDisplayMovesToggle.classList.toggle("display-moves-off", !displayMovesEnabled);
-  const displayMovesTitle = displayMovesEnabled ? "Visualisation: Visible" : "Visualisation: Stealth";
+  const displayMovesTitle = t(displayMovesEnabled ? "visualisationVisible" : "visualisationStealth");
   refs.editDisplayMovesToggle.setAttribute("title", displayMovesTitle);
   refs.editDisplayMovesToggle.setAttribute("aria-label", displayMovesTitle);
   refs.editDisplayMovesToggle.setAttribute("aria-pressed", String(displayMovesEnabled));
@@ -31,8 +31,8 @@ function setEditDisplayMoves(enabled) {
 function setEditMode(mode) {
   state.editMode = mode === "element" ? "element" : "position";
   refs.editModeIcon.innerHTML = state.editMode === "element" ? iconSet.code : iconSet.crosshair;
-  refs.editModeLabel.textContent = state.editMode === "element" ? "Element" : "Position";
-  const modeTitle = state.editMode === "element" ? "Mode: Element" : "Mode: Position";
+  refs.editModeLabel.textContent = t(state.editMode === "element" ? "element" : "position");
+  const modeTitle = t(state.editMode === "element" ? "modeElement" : "modePosition");
   refs.editModeToggle.setAttribute("title", modeTitle);
   refs.editModeToggle.setAttribute("aria-label", modeTitle);
   refs.editModeToggle.setAttribute("aria-pressed", String(state.editMode === "element"));
@@ -43,7 +43,7 @@ function setEditDefault(enabled) {
   refs.editDefault.checked = isDefault;
   refs.editDefaultIcon.innerHTML = iconSet.star;
   refs.editDefaultToggle.classList.toggle("active", isDefault);
-  const defaultTitle = isDefault ? "Default: on" : "Default: off";
+  const defaultTitle = t(isDefault ? "defaultOn" : "defaultOff");
   refs.editDefaultToggle.setAttribute("title", defaultTitle);
   refs.editDefaultToggle.setAttribute("aria-label", defaultTitle);
   refs.editDefaultToggle.setAttribute("aria-pressed", String(isDefault));
@@ -170,12 +170,12 @@ async function cleanupLegacyTrackMovesSetting() {
 async function setDefaultMacro(macroId, enabled = true) {
   const macro = macros.find((item) => item.id === macroId);
   if (!macro) {
-    setStatus("Macros не найден.");
+    setStatus(t("macroNotFound"));
     return;
   }
 
   defaultMacroId = enabled ? macroId : null;
   await persistDefaultMacroId();
   render();
-  setStatus(enabled ? `Дефолтный macros: ${macro.name}` : "Дефолтный macros не задан.");
+  setStatus(enabled ? t("defaultMacroSet", { name: macro.name }) : t("defaultMacroUnset"));
 }

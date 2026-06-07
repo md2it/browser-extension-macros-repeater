@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -12,49 +12,52 @@
   <body>
     <main class="popup-shell">
       <nav class="popup-menu" aria-label="Popup pages">
-        <button class="popup-menu-btn active" type="button" data-page="macros" data-tooltip="MACROSES" aria-label="MACROSES" aria-current="page"></button>
-        <button class="popup-menu-btn" type="button" data-page="settings" data-tooltip="SETTINGS" aria-label="SETTINGS"></button>
-        <button class="popup-menu-btn" type="button" data-page="shortcuts" data-tooltip="SHORTCUTS" aria-label="SHORTCUTS"></button>
-        <button class="popup-menu-btn" type="button" data-page="about" data-tooltip="ABOUT" aria-label="ABOUT"></button>
+        <button class="popup-menu-btn active" type="button" data-page="macros" aria-current="page"></button>
+        <button class="popup-menu-btn" type="button" data-page="settings"></button>
+        <button class="popup-menu-btn" type="button" data-page="shortcuts"></button>
+        <button class="popup-menu-btn" type="button" data-page="about"></button>
       </nav>
 
       <div class="popup-content">
         <section class="popup-page popup" data-page-content="macros">
-          <button id="new-macro-btn" class="btn btn-primary" type="button">NEW macros</button>
+          <button id="new-macro-btn" class="btn btn-primary" type="button" data-i18n="newMacro">NEW macro</button>
 
           <p id="status-line" class="status-line" role="status" aria-live="polite"></p>
 
           <section>
-            <ul id="macros-list" class="macros-list" aria-label="Список MACROSES"></ul>
+            <ul id="macros-list" class="macros-list"></ul>
           </section>
 
-          <button id="stop-execution-btn" class="btn btn-danger hidden" type="button">STOP</button>
+          <button id="stop-execution-btn" class="btn btn-danger hidden" type="button" data-i18n="stop">STOP</button>
         </section>
 
         <section class="popup-page hidden" data-page-content="settings">
-          <h1 class="page-title">SETTINGS</h1>
+          <h1 class="page-title" data-i18n="navSettings">SETTINGS</h1>
           <div class="page-divider"></div>
           <div class="settings-list">
+            <div class="settings-language">
+              <div id="language-selector" class="language-selector" role="group" aria-label="Language" dir="ltr"></div>
+            </div>
             <div class="settings-row settings-row--btn">
-              <span class="settings-row-label">Execution speed</span>
+              <span class="settings-row-label" data-i18n="executionSpeed">Execution speed</span>
               <button id="setting-execution-speed" class="speed-cycle-btn" type="button"></button>
             </div>
             <label class="settings-row" for="setting-skip-new-macro">
-              <span class="settings-row-label">Skip explanations for new macros</span>
+              <span class="settings-row-label" data-i18n="skipNewMacro">Skip explanations for new macros</span>
               <span class="settings-toggle-wrap">
                 <input type="checkbox" id="setting-skip-new-macro" class="visually-hidden" />
                 <span class="toggle-switch-visual" aria-hidden="true"></span>
               </span>
             </label>
             <label class="settings-row" for="setting-skip-display-moves">
-              <span class="settings-row-label">Skip explanations for Visible / Stealth setting</span>
+              <span class="settings-row-label" data-i18n="skipDisplayMoves">Skip explanations for Visible / Stealth setting</span>
               <span class="settings-toggle-wrap">
                 <input type="checkbox" id="setting-skip-display-moves" class="visually-hidden" />
                 <span class="toggle-switch-visual" aria-hidden="true"></span>
               </span>
             </label>
             <label class="settings-row" for="setting-skip-mode">
-              <span class="settings-row-label">Skip explanations for Position / Element setting</span>
+              <span class="settings-row-label" data-i18n="skipMode">Skip explanations for Position / Element setting</span>
               <span class="settings-toggle-wrap">
                 <input type="checkbox" id="setting-skip-mode" class="visually-hidden" />
                 <span class="toggle-switch-visual" aria-hidden="true"></span>
@@ -64,31 +67,31 @@
         </section>
 
         <section class="popup-page shortcuts-page hidden" data-page-content="shortcuts">
-          <h1 class="page-title">SHORTCUTS</h1>
+          <h1 class="page-title" data-i18n="navShortcuts">SHORTCUTS</h1>
           <div class="page-divider"></div>
-          <p class="shortcuts-heading">To run / stop the extension:</p>
+          <p class="shortcuts-heading" data-i18n="shortcutsHeading">To run / stop the extension:</p>
           <ol class="shortcuts-steps">
             <li>
-              <span class="shortcut-label">Press:</span> <kbd>Ctrl+Shift+M</kbd><br />
-              <span class="shortcut-label">On Mac:</span> <kbd>Cmd+Shift+M</kbd>
+              <span class="shortcut-label" data-i18n="press">Press:</span> <kbd>Ctrl+Shift+X</kbd><br />
+              <span class="shortcut-label" data-i18n="onMac">On Mac:</span> <kbd>Cmd+Shift+X</kbd>
             </li>
-            <li><strong>Release</strong> the keys</li>
-            <li>Then press <kbd>M</kbd></li>
+            <li data-i18n-html="releaseKeys"><strong>Release</strong> the keys</li>
+            <li data-i18n-html="thenPress">Then press <kbd>M</kbd></li>
           </ol>
-          <p class="page-note">The 3-step shortcut is not obvious.</p>
-          <p class="page-note">But it is safer and avoids conflicts with other apps.</p>
+          <p class="page-note" data-i18n="shortcutNote1">The 3-step shortcut is not obvious.</p>
+          <p class="page-note" data-i18n="shortcutNote2">But it is safer and avoids conflicts with other apps.</p>
           <div class="soft-divider"></div>
-          <p class="shortcuts-stop"><strong>To stop:</strong> <kbd>Esc</kbd></p>
+          <p class="shortcuts-stop" data-i18n-html="toStop"><strong>To stop:</strong> <kbd>Esc</kbd></p>
           <div class="soft-divider"></div>
         </section>
 
         <section class="popup-page about-page hidden" data-page-content="about">
-          <h1 class="page-title">ABOUT</h1>
+          <h1 class="page-title" data-i18n="navAbout">ABOUT</h1>
           <div class="page-divider"></div>
           <ul class="about-list">
-            <li><span class="about-icon" data-about-icon="shield"></span><span>Doesn't use the network</span></li>
-            <li><span class="about-icon" data-about-icon="shield"></span><span>Doesn't collect data</span></li>
-            <li><span class="about-icon" data-about-icon="heart"></span><span>Credits (MIT): Lucide</span></li>
+            <li><span class="about-icon" data-about-icon="shield"></span><span data-i18n="noNetwork">Doesn't use the network</span></li>
+            <li><span class="about-icon" data-about-icon="shield"></span><span data-i18n="noCollection">Doesn't collect data</span></li>
+            <li><span class="about-icon" data-about-icon="heart"></span><span data-i18n="credits">Credits (MIT): Lucide</span></li>
           </ul>
           <footer class="about-footer">
             <div class="soft-divider"></div>
@@ -102,19 +105,19 @@
     <div id="edit-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="edit-modal-title">
       <div class="modal">
         <div class="modal-header">
-          <h3 id="edit-modal-title">Редактирование макроса</h3>
-          <button id="close-edit-btn" class="modal-close-btn" type="button" title="Закрыть" aria-label="Закрыть"></button>
+          <h3 id="edit-modal-title" data-i18n="editMacroTitle">Edit macro</h3>
+          <button id="close-edit-btn" class="modal-close-btn" type="button" data-i18n-title="close"></button>
         </div>
 
         <div id="edit-name-field" class="edit-name-field">
-          <input id="edit-name" class="edit-name-input" type="text" aria-label="Название" />
-          <button id="clear-edit-name-btn" class="edit-name-clear-btn" type="button" title="Очистить название" aria-label="Очистить название"></button>
+          <input id="edit-name" class="edit-name-input" type="text" data-i18n-title="name" />
+          <button id="clear-edit-name-btn" class="edit-name-clear-btn" type="button" data-i18n-title="clearName"></button>
         </div>
 
         <div class="edit-settings">
           <button id="edit-default-toggle" class="setting-toggle default-toggle" type="button" aria-pressed="false">
             <span id="edit-default-icon" class="default-toggle-icon" aria-hidden="true"></span>
-            <span class="setting-toggle-label">Default</span>
+            <span class="setting-toggle-label" data-i18n="default">Default</span>
           </button>
           <input id="edit-default" type="checkbox" class="visually-hidden" />
 
@@ -130,18 +133,18 @@
           </button>
 
           <label class="edit-repeat-setting">
-            <span class="repeat-prefix">Repeat</span>
+            <span class="repeat-prefix" data-i18n="repeat">Repeat</span>
             <input id="edit-repeats" class="repeat-input" type="number" min="1" max="999" step="1" inputmode="numeric" />
           </label>
         </div>
 
         <div class="modal-actions edit-modal-actions">
-          <button id="save-edit-btn" class="btn btn-primary" type="button">Сохранить</button>
-          <button id="cancel-edit-btn" class="btn" type="button">Отмена</button>
+          <button id="save-edit-btn" class="btn btn-primary" type="button" data-i18n="save">Save</button>
+          <button id="cancel-edit-btn" class="btn" type="button" data-i18n="cancel">Cancel</button>
         </div>
 
         <section class="field">
-          <span>Список шагов</span>
+          <span data-i18n="stepsList">Steps</span>
           <ol id="edit-steps" class="steps-list"></ol>
         </section>
       </div>
@@ -150,18 +153,18 @@
     <div id="new-macro-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="new-macro-modal-title">
       <div class="modal">
         <div class="modal-header">
-          <h3 id="new-macro-modal-title">Новый макрос</h3>
-          <button id="close-new-macro-modal-btn" class="modal-close-btn" type="button" title="Закрыть" aria-label="Закрыть"></button>
+          <h3 id="new-macro-modal-title" data-i18n="newMacroTitle">New macro</h3>
+          <button id="close-new-macro-modal-btn" class="modal-close-btn" type="button" data-i18n-title="close"></button>
         </div>
-        <p class="modal-description">Когда запустите режим записи, то будет мигать красная точка, значит запись идёт. Просто нажимайте то, что вам нужно, расширение запомнит все клики. Когда закончите, ещё раз нажмите на кнопку расширения.</p>
+        <p class="modal-description" data-i18n="newMacroDescription"></p>
         <label class="dont-show-row" for="new-macro-dont-show">
           <input type="checkbox" id="new-macro-dont-show" class="visually-hidden" />
           <span class="toggle-switch-visual" aria-hidden="true"></span>
-          <span class="dont-show-label">Don't show me again</span>
+          <span class="dont-show-label" data-i18n="dontShowAgain">Don't show me again</span>
         </label>
         <div class="modal-actions explanation-modal-actions">
-          <button id="new-macro-start-btn" class="btn btn-primary" type="button">Start</button>
-          <button id="new-macro-cancel-btn" class="btn" type="button">Cancel</button>
+          <button id="new-macro-start-btn" class="btn btn-primary" type="button" data-i18n="start">Start</button>
+          <button id="new-macro-cancel-btn" class="btn" type="button" data-i18n="cancel">Cancel</button>
         </div>
       </div>
     </div>
@@ -169,22 +172,22 @@
     <div id="display-moves-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="display-moves-modal-title">
       <div class="modal">
         <div class="modal-header">
-          <h3 id="display-moves-modal-title">Visible / Stealth</h3>
-          <button id="close-display-moves-modal-btn" class="modal-close-btn" type="button" title="Закрыть" aria-label="Закрыть"></button>
+          <h3 id="display-moves-modal-title" data-i18n="displayMovesTitle">Visible / Stealth</h3>
+          <button id="close-display-moves-modal-btn" class="modal-close-btn" type="button" data-i18n-title="close"></button>
         </div>
         <ul class="explanation-list">
-          <li><strong>Visible</strong> будет показывать перемещение виртуальной мышки. Это удобнее в большинстве случаев.</li>
-          <li><strong>Stealth</strong> будет делать клики точно так же, но без визуализации.</li>
-          <li>В любом случае любой ваш клик (во время воспроизведения) прервёт исполнение даже в таком режиме.</li>
+          <li data-i18n-html="visibleDescription"></li>
+          <li data-i18n-html="stealthDescription"></li>
+          <li data-i18n="interruptDescription"></li>
         </ul>
         <label class="dont-show-row" for="display-moves-dont-show">
           <input type="checkbox" id="display-moves-dont-show" class="visually-hidden" />
           <span class="toggle-switch-visual" aria-hidden="true"></span>
-          <span class="dont-show-label">Don't show me again</span>
+          <span class="dont-show-label" data-i18n="dontShowAgain">Don't show me again</span>
         </label>
         <div class="modal-actions explanation-modal-actions">
-          <button id="display-moves-visible-btn" class="btn btn-primary" type="button">Visible</button>
-          <button id="display-moves-stealth-btn" class="btn" type="button">Stealth</button>
+          <button id="display-moves-visible-btn" class="btn btn-primary" type="button" data-i18n="visible">Visible</button>
+          <button id="display-moves-stealth-btn" class="btn" type="button" data-i18n="stealth">Stealth</button>
         </div>
       </div>
     </div>
@@ -192,21 +195,21 @@
     <div id="mode-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="mode-modal-title">
       <div class="modal">
         <div class="modal-header">
-          <h3 id="mode-modal-title">Режим шагов</h3>
-          <button id="close-mode-modal-btn" class="modal-close-btn" type="button" title="Закрыть" aria-label="Закрыть"></button>
+          <h3 id="mode-modal-title" data-i18n="modeTitle">Step mode</h3>
+          <button id="close-mode-modal-btn" class="modal-close-btn" type="button" data-i18n-title="close"></button>
         </div>
         <ul class="explanation-list">
-          <li><strong>Position</strong> использует точное положение кликов на сайте. В процессе воспроизведения, окно браузера должен быть таким же как при записи! Иначе макрос может промахнуться.</li>
-          <li><strong>Element</strong> находит цель клика по элементу страницы. При изменении элемента макрос может перестать работать. Рекомендуется <strong>только для IT специалистов</strong> (или если вы уверены, что вам нужно именно так).</li>
+          <li data-i18n-html="positionDescription"></li>
+          <li data-i18n-html="elementDescription"></li>
         </ul>
         <label class="dont-show-row" for="mode-dont-show">
           <input type="checkbox" id="mode-dont-show" class="visually-hidden" />
           <span class="toggle-switch-visual" aria-hidden="true"></span>
-          <span class="dont-show-label">Don't show me again</span>
+          <span class="dont-show-label" data-i18n="dontShowAgain">Don't show me again</span>
         </label>
         <div class="modal-actions explanation-modal-actions">
-          <button id="mode-position-btn" class="btn btn-primary" type="button">Position</button>
-          <button id="mode-element-btn" class="btn" type="button">Element</button>
+          <button id="mode-position-btn" class="btn btn-primary" type="button" data-i18n="position">Position</button>
+          <button id="mode-element-btn" class="btn" type="button" data-i18n="element">Element</button>
         </div>
       </div>
     </div>
@@ -215,6 +218,7 @@
     <script src="lib/our/api.js"></script>
     <script src="lib/our/safe-extension-api.js"></script>
     <script src="app/safe-extension-api-rules.js"></script>
+    <script src="app/i18n.js"></script>
     <script src="app/popup/state.js"></script>
     <script src="app/popup/storage.js"></script>
     <script src="app/popup/execution.js"></script>

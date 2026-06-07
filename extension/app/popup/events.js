@@ -29,7 +29,7 @@ refs.list.addEventListener("click", (event) => {
   if (action === "toggle-display-moves") {
     const macro = macros.find((item) => item.id === macroId);
     if (!macro) {
-      setStatus("Macros не найден.");
+      setStatus(t("macroNotFound"));
       return;
     }
 
@@ -38,7 +38,10 @@ refs.list.addEventListener("click", (event) => {
     macro.trackMoves = nextDisplayMoves;
     void persistMacros().then(() => {
       render();
-      setStatus(`Display moves ${nextDisplayMoves ? "включен" : "выключен"} для "${macro.name}".`);
+      setStatus(t("displayMovesChanged", {
+        state: t(nextDisplayMoves ? "enabled" : "disabled"),
+        name: macro.name
+      }));
     });
     return;
   }
@@ -70,14 +73,14 @@ refs.list.addEventListener("change", (event) => {
 
   const macro = macros.find((item) => item.id === input.dataset.id);
   if (!macro) {
-    setStatus("Macros не найден.");
+    setStatus(t("macroNotFound"));
     return;
   }
 
   normalizeRepeatInput(input);
   macro.repeats = Number(input.value);
   void persistMacros().then(() => {
-    setStatus(`Repeat для "${macro.name}": ${macro.repeats}.`);
+    setStatus(t("repeatChanged", { name: macro.name, repeats: macro.repeats }));
   });
 });
 
@@ -139,7 +142,7 @@ refs.saveEditBtn.addEventListener("click", async () => {
   if (state.modalMode === "edit" && state.editMacroId) {
     const macro = macros.find((item) => item.id === state.editMacroId);
     if (!macro) {
-      setStatus("Macros не найден для сохранения.");
+      setStatus(t("macroNotFoundForSave"));
       closeEditModal();
       return;
     }
@@ -160,12 +163,12 @@ refs.saveEditBtn.addEventListener("click", async () => {
     }
     closeEditModal();
     render();
-    setStatus("Macros обновлен.");
+    setStatus(t("macroUpdated"));
     return;
   }
 
   if (state.modalMode !== "create") {
-    setStatus("Сохранение недоступно: режим не выбран.");
+    setStatus(t("saveUnavailable"));
     return;
   }
 
@@ -186,7 +189,7 @@ refs.saveEditBtn.addEventListener("click", async () => {
   }
   closeEditModal();
   render();
-  setStatus("Macros сохранен и добавлен в список.");
+  setStatus(t("macroSaved"));
 });
 
 refs.cancelEditBtn.addEventListener("click", () => {

@@ -1,4 +1,6 @@
 
+registerDocumentOperabilityProbeListener();
+
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (!message || typeof message.type !== "string") {
     sendResponse({ ok: false, error: "invalid_message" });
@@ -36,6 +38,12 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     return;
   }
 
+  // Проверку доступности страницы обрабатывает отдельный слушатель
+  // (registerDocumentOperabilityProbeListener) — здесь её игнорируем.
+  if (message.type === PROBE_DOCUMENT_OPERABILITY) {
+    return;
+  }
+
   sendResponse({ ok: false, error: "unknown_message_type" });
 });
 
@@ -55,7 +63,7 @@ document.addEventListener(
       return;
     }
 
-    if (shortcutState.isWaitingForAction && event.code === SHORTCUT_RUN_DEFAULT_CODE) {
+    if (shortcutState.isWaitingForAction && isPrefixActionKey(event)) {
       stopWaitingForShortcutAction();
       void sendRuntimeMessage({ type: "shortcut-run-default" });
     }
@@ -72,10 +80,17 @@ void sendRuntimeMessage({ type: "recording-status" }).then((response) => {
 document.addEventListener(
   "keyup",
   (event) => {
-    if (event.code === SHORTCUT_PREFIX_CODE && shortcutState.isPrefixDown) {
-      shortcutState.isPrefixDown = false;
-      startWaitingForShortcutAction();
+    if (!shortcutState.isPrefixDown) {
+      return;
     }
+    // Ждём, пока модификаторы (Cmd/Ctrl + Shift) будут полностью отпущены.
+    // На macOS keyup буквенной клавиши подавляется, пока удержан Cmd,
+    // поэтому ориентируемся на отпускание модификаторов, а не самой буквы.
+    if (isPrefixChordHeld(event)) {
+      return;
+    }
+    shortcutState.isPrefixDown = false;
+    startWaitingForShortcutAction();
   },
   true
 );

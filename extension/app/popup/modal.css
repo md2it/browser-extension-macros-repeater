@@ -86,6 +86,11 @@
   color: #4f5570;
 }
 
+.status-line--error {
+  color: #dc2626;
+  font-weight: 600;
+}
+
 .modal-overlay {
   position: fixed;
   inset: 0;

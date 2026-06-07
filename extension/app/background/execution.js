@@ -9,6 +9,12 @@ async function startExecutionOnTab({ tabId, macroId, macroName, repeats, trackMo
     return { ok: false, error: "tab_id_required" };
   }
 
+  // Проверяем доступность страницы повторно непосредственно перед исполнением.
+  if (!(await canOperateOnTab(tabId))) {
+    await showRestrictedNotice(tabId);
+    return { ok: false, error: "page_blocked" };
+  }
+
   if (!Array.isArray(steps) || !steps.length) {
     return { ok: false, error: "empty_steps" };
   }
@@ -101,6 +107,21 @@ async function getRuntimeExecutionState() {
   };
 }
 
+// Сопоставляет сообщение об остановке исполнения с типом негативного события.
+function resolveStopEventKind(message) {
+  if (message?.type === "execution-user-click-interrupt") {
+    return "user-click";
+  }
+  switch (message?.reason) {
+    case "target_not_found":
+      return "element-not-found";
+    case "user_stop":
+      return "stopped";
+    default:
+      return "failed";
+  }
+}
+
 async function stopExecutionWithEvent(event) {
   await clearExecutionState();
   await writeExecutionLastEvent(event);
@@ -120,15 +141,48 @@ async function sendRecordingListenerMessage(tabId, message) {
   }
 }
 
-async function openPopupWithCompletionMessage() {
+// Открывает обычный popup расширения для конкретной вкладки.
+// Временный popup назначается только этой вкладке и сбрасывается после открытия.
+async function openMainPopup(tabId, windowId) {
   if (!ext.action || typeof ext.action.openPopup !== "function") {
     return false;
   }
 
+  let winId = windowId;
+  if (winId === void 0 && Number.isInteger(tabId)) {
+    try {
+      const tab = await ext.tabs.get(tabId);
+      winId = tab.windowId;
+    } catch {}
+  }
+
   try {
-    await ext.action.openPopup();
+    if (Number.isInteger(tabId)) {
+      await ext.action.setPopup({ tabId, popup: "popup.html" });
+    }
+    await ext.action.openPopup(winId !== void 0 ? { windowId: winId } : undefined);
     return true;
   } catch {
     return false;
+  } finally {
+    if (Number.isInteger(tabId)) {
+      await ext.action.setPopup({ tabId, popup: "" });
+    }
   }
+}
+
+// Клик по иконке: проверяем активную вкладку и открываем обычный popup
+// либо отдельный popup с уведомлением о недоступной странице.
+async function handleActionClick(tab) {
+  const tabId = Number.isInteger(tab?.id) ? tab.id : null;
+  if (tabId === null) {
+    return;
+  }
+
+  if (await canOperateOnTab(tabId)) {
+    await openMainPopup(tabId, tab.windowId);
+    return;
+  }
+
+  await showRestrictedNotice(tabId, tab.windowId);
 }

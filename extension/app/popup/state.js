@@ -66,6 +66,7 @@ const refs = {
   modePositionBtn: document.getElementById("mode-position-btn"),
   modeElementBtn: document.getElementById("mode-element-btn"),
   settingExecutionSpeed: document.getElementById("setting-execution-speed"),
+  languageSelector: document.getElementById("language-selector"),
   settingSkipNewMacro: document.getElementById("setting-skip-new-macro"),
   settingSkipDisplayMoves: document.getElementById("setting-skip-display-moves"),
   settingSkipMode: document.getElementById("setting-skip-mode")

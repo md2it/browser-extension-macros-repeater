@@ -1,27 +1,23 @@
 
 async function init() {
   await cleanupLegacyTrackMovesSetting();
+  await initializeLocale();
   await readSettingsFromStorage();
   syncSettingsUI();
+  syncPopupLocale();
   await loadMacros();
   const createdMacro = await completeCreateModeIfNeeded();
   render();
   const executionStatus = await refreshExecutionStatus();
   if (createdMacro) {
     openEditModal(createdMacro.id);
-    setStatus("Создание завершено. Проверьте и сохраните параметры macros.");
+    setStatus(t("createCompleted"));
     return;
   }
 
-  if (executionStatus?.lastEvent === "completed" && executionStatus.completedMacroName) {
-    return;
-  }
-
-  if (executionStatus?.lastEvent === "stopped" && executionStatus.stoppedMacroName) {
-    return;
-  }
-
-  if (executionStatus?.lastEvent === "failed" && executionStatus.failedMacroName) {
+  // refreshExecutionStatus уже выставил статус по недавнему событию или
+  // активному исполнению — не перезаписываем подсказкой.
+  if (executionStatus?.lastEvent?.kind) {
     return;
   }
 
@@ -29,7 +25,7 @@ async function init() {
     return;
   }
 
-  setStatus("Нажмите NEW macros, чтобы запустить запись кликов.");
+  setStatus(t("initialHint"));
 }
 
 init();

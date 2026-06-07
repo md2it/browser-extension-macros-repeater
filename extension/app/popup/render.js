@@ -6,7 +6,7 @@ function render() {
   if (macros.length === 0) {
     const emptyRow = document.createElement("li");
     emptyRow.className = "macro-row";
-    emptyRow.textContent = "Список пуст. Нажмите NEW macros, чтобы создать первый.";
+    emptyRow.textContent = t("emptyList");
     refs.list.append(emptyRow);
     syncPopupHeight();
     return;
@@ -14,28 +14,28 @@ function render() {
 
   for (const macro of macros) {
     const displayMovesEnabled = getDisplayMovesValue(macro);
-    const displayMovesTitle = displayMovesEnabled ? "Display moves: on" : "Display moves: off";
+    const displayMovesTitle = t(displayMovesEnabled ? "displayMovesOn" : "displayMovesOff");
     const displayMovesIcon = displayMovesEnabled ? iconSet.eye : iconSet.eyeOff;
     const displayMovesClassName = displayMovesEnabled ? "display-moves-on" : "display-moves-off";
     const modeIcon = (macro.mode ?? "position") === "element" ? iconSet.code : iconSet.crosshair;
-    const modeTitle = (macro.mode ?? "position") === "element" ? "Mode: Element" : "Mode: Position";
+    const modeTitle = t((macro.mode ?? "position") === "element" ? "modeElement" : "modePosition");
     const isDefault = macro.id === defaultMacroId;
-    const defaultTitle = isDefault ? "Дефолтный macros" : "Сделать дефолтным";
-    const defaultDetail = isDefault ? "Работает по shortcut" : "Чтобы работал с shortcut";
+    const defaultTitle = t(isDefault ? "defaultMacro" : "makeDefault");
+    const defaultDetail = t(isDefault ? "worksByShortcut" : "enableShortcut");
     const row = document.createElement("li");
     row.className = "macro-row";
     row.innerHTML = `
       <div class="macro-main">
-        <button class="icon-btn run-btn" type="button" data-action="run" data-id="${macro.id}" title="Запуск режима исполнения">${iconSet.play}</button>
+        <button class="icon-btn run-btn" type="button" data-action="run" data-id="${macro.id}" title="${t("run")}" aria-label="${t("run")}">${iconSet.play}</button>
         <span class="macro-mode-icon" aria-hidden="true" title="${modeTitle}">${modeIcon}</span>
         <span class="macro-display-moves-icon ${displayMovesClassName}" aria-hidden="true" title="${displayMovesTitle}">${displayMovesIcon}</span>
         <span class="macro-name">${macro.name}</span>
       </div>
       <div class="macro-actions">
         <button class="icon-btn default-btn ${isDefault ? "active" : ""}" type="button" data-action="set-default" data-id="${macro.id}" data-tooltip="${defaultTitle}" data-tooltip-detail="${defaultDetail}" aria-label="${defaultTitle}. ${defaultDetail}" aria-pressed="${isDefault}">${iconSet.star}</button>
-        <input class="macro-repeats repeat-input" type="number" min="1" max="999" step="1" inputmode="numeric" value="${normalizeRepeats(macro.repeats)}" data-action="set-repeats" data-id="${macro.id}" title="Repeat" aria-label="Repeat" />
-        <button class="icon-btn" type="button" data-action="edit" data-id="${macro.id}" title="Редактировать">${iconSet.squarePen}</button>
-        <button class="icon-btn delete-btn" type="button" data-action="delete" data-id="${macro.id}" title="Удалить" aria-label="Удалить">${iconSet.trash}</button>
+        <input class="macro-repeats repeat-input" type="number" min="1" max="999" step="1" inputmode="numeric" value="${normalizeRepeats(macro.repeats)}" data-action="set-repeats" data-id="${macro.id}" title="${t("repeat")}" aria-label="${t("repeat")}" />
+        <button class="icon-btn" type="button" data-action="edit" data-id="${macro.id}" title="${t("edit")}" aria-label="${t("edit")}">${iconSet.squarePen}</button>
+        <button class="icon-btn delete-btn" type="button" data-action="delete" data-id="${macro.id}" title="${t("delete")}" aria-label="${t("delete")}">${iconSet.trash}</button>
       </div>
     `;
     refs.list.append(row);
@@ -44,8 +44,10 @@ function render() {
   syncPopupHeight();
 }
 
-function setStatus(text) {
+function setStatus(text, { error = false } = {}) {
   refs.status.textContent = text;
+  // Запись о негативном событии отображается красным.
+  refs.status.classList.toggle("status-line--error", Boolean(error));
   syncPopupHeight();
 }
 
@@ -54,8 +56,8 @@ function clearDeleteConfirmation() {
     const label = button.querySelector(".delete-btn-label");
     button.classList.remove("delete-btn-armed");
     button.style.width = "28px";
-    button.title = "Удалить";
-    button.setAttribute("aria-label", "Удалить");
+    button.title = t("delete");
+    button.setAttribute("aria-label", t("delete"));
 
     if (label) {
       let collapseFallback;
@@ -85,8 +87,8 @@ function clearDeleteConfirmation() {
 function armDeleteButton(button, macroId) {
   clearDeleteConfirmation();
   state.pendingDeleteMacroId = macroId;
-  button.title = "Подтвердить удаление";
-  button.setAttribute("aria-label", "Подтвердить удаление");
+  button.title = t("confirmDelete");
+  button.setAttribute("aria-label", t("confirmDelete"));
   for (const existingLabel of button.querySelectorAll(".delete-btn-label")) {
     existingLabel.remove();
   }
@@ -94,7 +96,7 @@ function armDeleteButton(button, macroId) {
   const label = document.createElement("span");
   label.className = "delete-btn-label";
   label.setAttribute("aria-hidden", "true");
-  label.textContent = "Подтвердить удаление";
+  label.textContent = t("confirmDelete");
   button.append(label);
   button.style.width = "max-content";
   const expandedWidth = Math.ceil(button.getBoundingClientRect().width);
@@ -110,7 +112,7 @@ async function deleteMacro(macroId) {
   const index = macros.findIndex((item) => item.id === macroId);
   if (index < 0) {
     clearDeleteConfirmation();
-    setStatus("Macros не найден.");
+    setStatus(t("macroNotFound"));
     return;
   }
 
@@ -123,20 +125,20 @@ async function deleteMacro(macroId) {
   clearDeleteConfirmation();
   await persistMacros();
   render();
-  setStatus("Macros удален.");
+  setStatus(t("macroDeleted"));
 }
 
 function openEditModal(macroId) {
   if (macroId !== null) {
     const macro = macros.find((item) => item.id === macroId);
     if (!macro) {
-      setStatus("Macros не найден.");
+      setStatus(t("macroNotFound"));
       return;
     }
 
     state.modalMode = "edit";
     state.editMacroId = macro.id;
-    refs.editModalTitle.textContent = "Редактирование макроса";
+    refs.editModalTitle.textContent = t("editMacroTitle");
     refs.editName.value = macro.name;
     refs.editRepeats.value = String(macro.repeats ?? 1);
     setEditDisplayMoves(getDisplayMovesValue(macro));
@@ -151,7 +153,7 @@ function openEditModal(macroId) {
 
   state.modalMode = "create";
   state.editMacroId = null;
-  refs.editModalTitle.textContent = "Создание макроса";
+  refs.editModalTitle.textContent = t("createMacroTitle");
   refs.editName.value = buildDefaultMacroName();
   refs.editRepeats.value = "1";
   setEditDisplayMoves(true);
@@ -175,7 +177,7 @@ function validateEditName() {
   refs.editNameField.classList.toggle("invalid", !isValid);
   if (!isValid) {
     refs.editName.focus();
-    setStatus("Введите название macros.");
+    setStatus(t("enterMacroName"));
   }
   return isValid;
 }
@@ -186,7 +188,7 @@ function requestCloseEditModal() {
   }
 
   closeEditModal();
-  setStatus("Редактирование отменено.");
+  setStatus(t("editCanceled"));
   return true;
 }
 
@@ -234,7 +236,7 @@ function closeModeModal() {
 async function startCreateMode() {
   const activeTab = await getActiveTab();
   if (!activeTab || !Number.isInteger(activeTab.id)) {
-    setStatus("Активная вкладка не найдена.");
+    setStatus(t("activeTabNotFound"));
     return;
   }
 
@@ -245,7 +247,12 @@ async function startCreateMode() {
   });
 
   if (!response?.ok) {
-    setStatus("Не удалось запустить режим создания.");
+    if (response?.error === "page_blocked") {
+      // Отдельный popup с уведомлением уже открыт фоновым скриптом.
+      window.close();
+      return;
+    }
+    setStatus(t("createFailed"), { error: true });
     return;
   }
 
@@ -292,7 +299,7 @@ function renderEditSteps(steps) {
   if (steps.length === 0) {
     const li = document.createElement("li");
     li.className = "step-row step-row-empty";
-    li.textContent = "Шаги отсутствуют.";
+    li.textContent = t("noSteps");
     refs.editSteps.append(li);
     syncPopupHeight();
     return;

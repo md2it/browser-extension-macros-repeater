@@ -149,12 +149,19 @@ async function startDefaultMacroFromTab(tabId) {
       })
       .filter((step) => step && step.trim())
     : [];
+  const macroName = typeof macro.name === "string" && macro.name.trim() ? macro.name.trim() : "macros";
+  if (!steps.length) {
+    // Запуск по хоткею без открытого popup: сохраняем событие,
+    // чтобы уведомление "В макросе нет шагов" показалось при открытии popup.
+    await writeExecutionLastEvent({ kind: "empty-steps", macroName });
+    return { ok: false, error: "empty_steps" };
+  }
   const repeatsRaw = Number(macro.repeats);
   const repeats = Number.isFinite(repeatsRaw) && repeatsRaw > 0 ? Math.floor(repeatsRaw) : 1;
   return startExecutionOnTab({
     tabId,
     macroId: macro.id,
-    macroName: typeof macro.name === "string" && macro.name.trim() ? macro.name.trim() : "macros",
+    macroName,
     repeats,
     trackMoves: Boolean(macro.displayMoves ?? macro.trackMoves),
     steps

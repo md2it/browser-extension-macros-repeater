@@ -42,7 +42,7 @@ function renderExecutionStatus(executionState) {
 
   refs.stopExecutionBtn.classList.remove("hidden");
   const remaining = formatRemainingMs(executionState.remainingMs ?? 0);
-  setStatus(`Выполняется "${executionState.macroName}". Осталось: ${remaining}`);
+  setStatus(t("running", { name: executionState.macroName, remaining }));
 }
 
 async function refreshExecutionStatus({ silent = false } = {}) {
@@ -62,12 +62,9 @@ async function refreshExecutionStatus({ silent = false } = {}) {
   clearExecutionPolling();
   refs.stopExecutionBtn.classList.add("hidden");
   if (!silent) {
-    if (response?.lastEvent === "completed" && response.completedMacroName) {
-      setStatus(`Выполнение "${response.completedMacroName}" завершено.`);
-    } else if (response?.lastEvent === "stopped" && response.stoppedMacroName) {
-      setStatus(`Выполнение "${response.stoppedMacroName}" остановлено.`);
-    } else if (response?.lastEvent === "failed" && response.failedMacroName) {
-      setStatus(`Выполнение "${response.failedMacroName}" завершилось с ошибкой.`);
+    const description = describeExecutionEvent(response?.lastEvent);
+    if (description) {
+      setStatus(description.text, { error: description.error });
     }
   } else {
     syncPopupHeight();
@@ -76,16 +73,45 @@ async function refreshExecutionStatus({ silent = false } = {}) {
   return response;
 }
 
+// Сопоставляет событие исполнения с текстом уведомления.
+// Негативные сценарии помечаются error: true (отображаются красным).
+function describeExecutionEvent(event) {
+  if (!event?.kind) {
+    return null;
+  }
+
+  const name = event.macroName || t("macroNoun");
+  switch (event.kind) {
+    case "completed":
+      return { text: t("executionCompleted", { name }), error: false };
+    case "stopped":
+      return { text: t("macroStopped"), error: true };
+    case "user-click":
+      return { text: t("macroStoppedByUser"), error: true };
+    case "element-not-found":
+      return {
+        text: t("elementNotFound"),
+        error: true
+      };
+    case "empty-steps":
+      return { text: t("macroHasNoSteps"), error: true };
+    case "failed":
+      return { text: t("executionFailed"), error: true };
+    default:
+      return null;
+  }
+}
+
 async function startExecution(macroId) {
   const macro = macros.find((item) => item.id === macroId);
   if (!macro) {
-    setStatus("Macros не найден.");
+    setStatus(t("macroNotFound"));
     return;
   }
 
   const activeTab = await getActiveTab();
   if (!activeTab || !Number.isInteger(activeTab.id)) {
-    setStatus("Активная вкладка не найдена.");
+    setStatus(t("activeTabNotFound"));
     return;
   }
 
@@ -102,7 +128,7 @@ async function startExecution(macroId) {
       .filter((step) => step && step.trim())
     : [];
   if (steps.length === 0) {
-    setStatus("В macros нет шагов для выполнения.");
+    setStatus(t("macroHasNoSteps"), { error: true });
     return;
   }
 
@@ -120,41 +146,47 @@ async function startExecution(macroId) {
   if (!response?.ok) {
     if (response?.error === "already_running") {
       renderExecutionStatus(response.state);
-      setStatus(`Уже выполняется "${response.state?.macroName ?? "макрос"}".`);
+      setStatus(t("alreadyRunning", { name: response.state?.macroName ?? t("macroNoun") }));
       return;
     }
 
     if (response?.error === "empty_steps") {
-      setStatus("Не удалось запустить: отсутствуют шаги исполнения.");
+      setStatus(t("macroHasNoSteps"), { error: true });
+      return;
+    }
+
+    if (response?.error === "page_blocked") {
+      // Отдельный popup с уведомлением уже открыт фоновым скриптом.
+      window.close();
       return;
     }
 
     if (response?.error === "tab_unreachable") {
-      setStatus("Не удалось запустить: вкладка недоступна для исполнения.");
+      setStatus(t("executionFailed"), { error: true });
       return;
     }
 
-    setStatus("Не удалось запустить выполнение macros.");
+    setStatus(t("executionFailed"), { error: true });
     return;
   }
 
   renderExecutionStatus(response.state);
-  setStatus(`Запущено выполнение "${macro.name}".`);
+  setStatus(t("executionStarted", { name: macro.name }));
   window.close();
 }
 
 async function stopExecution() {
   const response = await sendRuntimeMessage({ type: "execution-stop" });
   if (!response?.ok) {
-    setStatus("Не удалось остановить выполнение.");
+    setStatus(t("stopFailed"));
     return;
   }
 
   clearExecutionPolling();
   refs.stopExecutionBtn.classList.add("hidden");
-  if (response.wasRunning && response.stoppedMacroName) {
-    setStatus(`Выполнение "${response.stoppedMacroName}" остановлено.`);
+  if (response.wasRunning) {
+    setStatus(t("macroStopped"), { error: true });
   } else {
-    setStatus("Активного выполнения нет.");
+    setStatus(t("noActiveExecution"));
   }
 }

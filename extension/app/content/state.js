@@ -19,7 +19,7 @@ const TRACKER_DEFAULT_COLOR = "#ff0000";
 const TRACKER_ACTIVE_COLOR = "#ff0000";
 const TRACKER_ACTIVE_DURATION_MS = 50;
 const TRACKER_ELEMENT_ID = "__macros_repeater_tracker";
-const SHORTCUT_PREFIX_CODE = "KeyM";
+const SHORTCUT_PREFIX_CODE = "KeyX";
 const SHORTCUT_RUN_DEFAULT_CODE = "KeyM";
 const SHORTCUT_HINT_DURATION_MS = 3000;
 
@@ -92,12 +92,31 @@ function sendRuntimeMessage(message) {
 }
 
 function isMacPlatform() {
-  return /\bMac/.test(navigator.platform);
+  return (
+    /Mac|iPhone|iPad|iPod/.test(navigator.userAgent) ||
+    navigator.platform.toUpperCase().includes("MAC")
+  );
 }
 
+// Полное сочетание-префикс нажато: Cmd/Ctrl + Shift + X (на keydown).
 function isPrefixShortcut(event) {
   const hasPlatformModifier = isMacPlatform() ? event.metaKey : event.ctrlKey;
   return event.code === SHORTCUT_PREFIX_CODE && event.shiftKey && hasPlatformModifier;
+}
+
+// Модификаторы префикса всё ещё удержаны (Cmd/Ctrl + Shift).
+// Используется на keyup, чтобы понять, что комбинацию полностью отпустили.
+function isPrefixChordHeld(event) {
+  const hasPlatformModifier = isMacPlatform() ? event.metaKey : event.ctrlKey;
+  return hasPlatformModifier && event.shiftKey;
+}
+
+// Клавиша действия (M) нажата без управляющих модификаторов.
+function isPrefixActionKey(event) {
+  if (event.ctrlKey || event.metaKey || event.altKey) {
+    return false;
+  }
+  return event.code === SHORTCUT_RUN_DEFAULT_CODE;
 }
 
 function clearShortcutHintTimer() {

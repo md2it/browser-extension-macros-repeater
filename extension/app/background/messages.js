@@ -1,7 +1,18 @@
 void syncActionBadge();
+
+// Клик по иконке: проверяем активную вкладку и решаем,
+// открыть обычный popup или отдельный popup с уведомлением.
+ext.action.onClicked.addListener((tab) => {
+  void handleActionClick(tab);
+});
+
 ext.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (!message || typeof message.type !== "string") {
     sendResponse({ ok: false, error: "invalid_message" });
+    return;
+  }
+  if (isBlockedNoticeDismissedMessage(message)) {
+    // Уведомление о недоступной странице закрыто — дополнительных действий не требуется.
     return;
   }
   if (message.type === "recording-start") {
@@ -9,6 +20,12 @@ ext.runtime.onMessage.addListener((message, sender, sendResponse) => {
       const tabId = Number.isInteger(message.tabId) ? message.tabId : null;
       if (tabId === null) {
         sendResponse({ ok: false, error: "tab_id_required" });
+        return;
+      }
+      // Проверяем доступность страницы повторно непосредственно перед созданием macros.
+      if (!(await canOperateOnTab(tabId))) {
+        await showRestrictedNotice(tabId);
+        sendResponse({ ok: false, error: "page_blocked" });
         return;
       }
       const previousSession = await readSession();
@@ -126,8 +143,7 @@ ext.runtime.onMessage.addListener((message, sender, sendResponse) => {
         }
       }
       await stopExecutionWithEvent({
-        type: "stopped",
-        macroId: currentState.macroId,
+        kind: "stopped",
         macroName: currentState.macroName
       });
       sendResponse({ ok: true, wasRunning: true, stoppedMacroName: currentState.macroName });
@@ -171,11 +187,10 @@ ext.runtime.onMessage.addListener((message, sender, sendResponse) => {
         return;
       }
       await stopExecutionWithEvent({
-        type: "completed",
-        macroId: currentState.macroId,
+        kind: "completed",
         macroName: currentState.macroName
       });
-      const popupOpened = await openPopupWithCompletionMessage();
+      const popupOpened = await openMainPopup(currentState.tabId);
       sendResponse({ ok: true, popupOpened });
     })().catch(() => sendResponse({ ok: false, error: "execution_complete_failed" }));
     return true;
@@ -192,8 +207,7 @@ ext.runtime.onMessage.addListener((message, sender, sendResponse) => {
         return;
       }
       await stopExecutionWithEvent({
-        type: "stopped",
-        macroId: currentState.macroId,
+        kind: resolveStopEventKind(message),
         macroName: currentState.macroName
       });
       sendResponse({ ok: true });
@@ -212,10 +226,9 @@ ext.runtime.onMessage.addListener((message, sender, sendResponse) => {
       sendResponse({
         ok: true,
         state: { isRunning: false },
-        lastEvent: lastEvent?.type ?? null,
-        completedMacroName: lastEvent?.type === "completed" ? lastEvent.macroName : undefined,
-        stoppedMacroName: lastEvent?.type === "stopped" ? lastEvent.macroName : undefined,
-        failedMacroName: lastEvent?.type === "failed" ? lastEvent.macroName : undefined
+        lastEvent: lastEvent?.kind
+          ? { kind: lastEvent.kind, macroName: lastEvent.macroName ?? null }
+          : null
       });
     })().catch(() => sendResponse({ ok: false, state: { isRunning: false } }));
     return true;
@@ -255,8 +268,7 @@ ext.runtime.onMessage.addListener((message, sender, sendResponse) => {
         }
       }
       await stopExecutionWithEvent({
-        type: "stopped",
-        macroId: currentState.macroId,
+        kind: "stopped",
         macroName: currentState.macroName
       });
       sendResponse({ ok: true, wasRunning: true, stoppedMacroName: currentState.macroName });

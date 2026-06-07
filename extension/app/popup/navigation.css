@@ -72,6 +72,11 @@
   visibility: visible;
 }
 
+[dir="rtl"] .popup-menu-btn::after {
+  right: calc(100% + 7px);
+  left: auto;
+}
+
 .popup-content {
   flex: 1 1 auto;
   min-width: 0;
@@ -237,6 +242,43 @@ kbd {
   display: flex;
   flex-direction: column;
   gap: 2px;
+}
+
+.settings-language {
+  display: flex;
+  flex-direction: column;
+  padding: 3px 0 10px;
+}
+
+.language-selector {
+  display: flex;
+  width: 100%;
+  gap: 4px;
+  direction: ltr;
+}
+
+.language-btn {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 6px 3px;
+  border: 1px solid #d8dcec;
+  border-radius: 6px;
+  color: #374151;
+  background: rgba(255, 255, 255, 0.82);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.language-btn:hover,
+.language-btn:focus-visible {
+  color: #012292;
+  border-color: #8f9fc9;
+}
+
+.language-btn.active {
+  color: #fff;
+  border-color: #012292;
+  background: #012292;
 }
 
 .settings-row {
