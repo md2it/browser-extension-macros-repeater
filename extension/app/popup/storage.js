@@ -129,6 +129,14 @@ async function loadMacros() {
     defaultMacroId = null;
     await persistDefaultMacroId();
   }
+
+  if (defaultMacroId) {
+    const defaultIndex = macros.findIndex((macro) => macro.id === defaultMacroId);
+    if (defaultIndex > 0) {
+      const [defaultMacro] = macros.splice(defaultIndex, 1);
+      macros.unshift(defaultMacro);
+    }
+  }
 }
 
 async function readSettingsFromStorage() {

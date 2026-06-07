@@ -1,4 +1,85 @@
 
+// Drag-and-drop reordering
+
+let dragSrcId = null;
+
+refs.list.addEventListener("dragstart", (event) => {
+  if (!event.target.closest("[data-action='drag-handle']")) {
+    event.preventDefault();
+    return;
+  }
+
+  const row = event.target.closest("li[data-macro-id]");
+  if (!row) {
+    event.preventDefault();
+    return;
+  }
+
+  dragSrcId = row.dataset.macroId;
+  event.dataTransfer.effectAllowed = "move";
+
+  const card = row.querySelector(".macro-row");
+  if (card) {
+    event.dataTransfer.setDragImage(card, card.offsetWidth / 2, card.offsetHeight / 2);
+  }
+
+  row.classList.add("drag-source");
+});
+
+refs.list.addEventListener("dragend", () => {
+  dragSrcId = null;
+  for (const row of refs.list.querySelectorAll("li[data-macro-id]")) {
+    row.classList.remove("drag-source", "drag-over");
+  }
+});
+
+refs.list.addEventListener("dragover", (event) => {
+  if (!dragSrcId) {
+    return;
+  }
+
+  event.preventDefault();
+  event.dataTransfer.dropEffect = "move";
+
+  const row = event.target.closest("li[data-macro-id]");
+  if (!row || row.dataset.macroId === dragSrcId) {
+    return;
+  }
+
+  for (const r of refs.list.querySelectorAll(".drag-over")) {
+    r.classList.remove("drag-over");
+  }
+  row.classList.add("drag-over");
+});
+
+refs.list.addEventListener("dragleave", (event) => {
+  const row = event.target.closest("li[data-macro-id]");
+  if (row && !row.contains(event.relatedTarget)) {
+    row.classList.remove("drag-over");
+  }
+});
+
+refs.list.addEventListener("drop", (event) => {
+  event.preventDefault();
+
+  const targetRow = event.target.closest("li[data-macro-id]");
+  if (!dragSrcId || !targetRow || targetRow.dataset.macroId === dragSrcId) {
+    return;
+  }
+
+  const srcIndex = macros.findIndex((m) => m.id === dragSrcId);
+  const dstIndex = macros.findIndex((m) => m.id === targetRow.dataset.macroId);
+  if (srcIndex < 0 || dstIndex < 0) {
+    return;
+  }
+
+  const [moved] = macros.splice(srcIndex, 1);
+  macros.splice(dstIndex, 0, moved);
+
+  void persistMacros();
+  render();
+});
+
 refs.list.addEventListener("click", (event) => {
   const target = event.target.closest("button");
   if (!target) {
