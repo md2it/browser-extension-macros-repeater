@@ -241,13 +241,19 @@ kbd {
 .settings-list {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 0;
 }
 
 .settings-language {
   display: flex;
   flex-direction: column;
-  padding: 3px 0 10px;
+  padding: 3px 0 12px;
+}
+
+.settings-divider {
+  height: 1px;
+  background: #e2e5f0;
+  margin-bottom: 4px;
 }
 
 .language-selector {
@@ -287,7 +293,8 @@ kbd {
   align-items: center;
   justify-content: flex-end;
   gap: 12px;
-  padding: 9px 0;
+  min-height: 38px;
+  padding: 4px 0;
   cursor: pointer;
   user-select: none;
 }
@@ -299,9 +306,11 @@ kbd {
 }
 
 .settings-toggle-wrap {
-  flex: 0 0 auto;
+  flex: 0 0 40px;
+  width: 40px;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
 }
 
 .settings-row--btn {
